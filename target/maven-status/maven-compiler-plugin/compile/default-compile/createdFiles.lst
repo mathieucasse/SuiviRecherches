@@ -1,0 +1,16 @@
+ch/matfly/suivirecherches/dao/HistoriqueRepo.class
+ch/matfly/suivirecherches/model/Recherche.class
+ch/matfly/suivirecherches/dao/RechercheRepo.class
+ch/matfly/suivirecherches/dao/PersonneRepo.class
+ch/matfly/suivirecherches/dao/AdresseRepo.class
+ch/matfly/suivirecherches/model/Adresse.class
+ch/matfly/suivirecherches/TestHybernateApplication.class
+ch/matfly/suivirecherches/model/StatutRecherche.class
+ch/matfly/suivirecherches/model/Historique.class
+ch/matfly/suivirecherches/model/Personne.class
+ch/matfly/suivirecherches/model/Entreprise.class
+ch/matfly/suivirecherches/controller/PersonneMVCController.class
+ch/matfly/suivirecherches/dao/EntrepriseRepo.class
+ch/matfly/suivirecherches/model/TelEnum.class
+ch/matfly/suivirecherches/controller/RechercheMVCController.class
+ch/matfly/suivirecherches/SomeTests.class
