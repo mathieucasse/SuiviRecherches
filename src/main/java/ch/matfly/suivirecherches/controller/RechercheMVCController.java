@@ -7,7 +7,10 @@ import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -50,7 +53,7 @@ public class RechercheMVCController {
 		return statutRecherche;
 	}
 
-	@RequestMapping("/home")
+	@GetMapping(value= {"/","/home"})
 	public ModelAndView home() {
 		ModelAndView mv = new ModelAndView("home.jsp");
 		List<Recherche> recherches = rechercheRepo.findAll();
@@ -59,14 +62,14 @@ public class RechercheMVCController {
 		return mv;
 	}
 
-	@RequestMapping("/rechercheForm")
+	@GetMapping("/rechercheForm")
 	public ModelAndView rechercheForm() {
 		ModelAndView mv = new ModelAndView("rechercheForm.jsp");
 		mv.addObject("statutRecherche",RechercheMVCController.getStatutRecherche());
 		return mv;
 	}
 
-	@RequestMapping("/addRecherche")
+	@PostMapping("/addRecherche")
 	@ResponseBody
 	public RedirectView addRecherche(
 			@RequestParam(name = "recherche.poste") String poste,
@@ -84,10 +87,10 @@ public class RechercheMVCController {
 		recherche=rechercheRepo.save(recherche);
 		log.info("addRecherche : " + recherche.toString());
 		historiqueRepo.save(new Historique(recherche.getId(), " --- CREATE --- "));
-		return new RedirectView("/home");
+		return new RedirectView("home");
 	}
 
-	@RequestMapping("/delRecherche")
+	@GetMapping("/delRecherche")
 	@ResponseBody
 	public RedirectView delRecherche(@RequestParam(name = "id") String id) {
 		Recherche recherche = rechercheRepo.findById(Long.valueOf(id)).orElse(null);
@@ -98,14 +101,15 @@ public class RechercheMVCController {
 			historiqueRepo.save(h);
 			rechercheRepo.delete(recherche);
 		}
-		return new RedirectView("/home");
+		return new RedirectView("home");
 	}
 
-	@RequestMapping("/editRecherche")
+	@GetMapping("/editRecherche")
 	@ResponseBody
 	public ModelAndView editRecherche(@RequestParam(name = "id") String id, @ModelAttribute("recherches") List<Recherche> recherches) {
 		ModelAndView mv = new ModelAndView("rechercheEdit.jsp");
 		log.info("==== editRecherche nb rech "+ recherches.size()+" : " + recherches.toString());
+		log.info("==== editRecherche id "+ id );
 		Recherche recherche = recherches.stream()
 								.filter(rech -> Long.valueOf(id).equals(rech.getId()))
 								.findAny().orElse(null);
@@ -115,12 +119,13 @@ public class RechercheMVCController {
 		return mv;
 	}
 
-	@RequestMapping("/showHistory")
+	@GetMapping("/showHistory")
 	@ResponseBody
 	public ModelAndView showHistory(@RequestParam(name = "id") String id,
 			@RequestParam(name = "entreprise") String entreprise,
 			@RequestParam(name = "poste") String poste) {
 		ModelAndView mv = new ModelAndView("showHistory.jsp");
+		log.info("==== showAllHistory : " + historiqueRepo.findAll().toString());
 		List<Historique> historique = historiqueRepo.findByRechercheId(Long.valueOf(id));
 		log.info("==== showHistory : " + historique.toString());
 		mv.addObject("historique",historique);
@@ -128,7 +133,7 @@ public class RechercheMVCController {
 		mv.addObject("poste",poste);
 		return mv;
 	}
-	@RequestMapping("/updateRecherche")
+	@PostMapping("/updateRecherche")
 	@ResponseBody
 	public RedirectView updateRecherche(@RequestParam Map<String, String> parameters) {
 
@@ -188,7 +193,7 @@ public class RechercheMVCController {
 			}
 		}
 
-		return new RedirectView("/home");
+		return new RedirectView("home");
 	}
 	static String lookFor(String rp, Map<String, String> map) {
 		log.debug("======= Looking for " + rp);

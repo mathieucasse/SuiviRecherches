@@ -57,11 +57,11 @@
 				<td>${item.statut}</td>
     	  		<td>${item.entreprise.nom}</td>
     	  		<td>${item.personne.prenom} ${item.personne.nom}</td>
-    	  		<td>${item.personne.telephone}"</td>
-    	  		<td>${item.personne.email}"</td>
-    	  		<td><a class="btn btn-warning" href="/showHistory?id=${item.id}&poste=${item.poste}&entreprise=${item.entreprise.nom}">History</a></td>
-    	  		<td><a class="btn btn-warning" href="/editRecherche?id=${item.id}">Edit</a></td>
-    	  		<td><a class="btn btn-warning" href="/delRecherche?id=${item.id}">Delete</a></td>
+    	  		<td>${item.personne.telephone}</td>
+    	  		<td>${item.personne.email}</td>
+    	  		<td><a class="btn btn-warning" href="showHistory?id=${item.id}&poste=${item.poste}&entreprise=${item.entreprise.nom}">History</a></td>
+    	  		<td><a class="btn btn-warning" href="editRecherche?id=${item.id}">Edit</a></td>
+    	  		<td><a class="btn btn-warning" href="delRecherche?id=${item.id}">Delete</a></td>
     		</tr>
   			</c:forEach>
   		</tbody>

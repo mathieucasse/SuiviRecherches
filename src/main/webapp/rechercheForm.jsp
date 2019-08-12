@@ -34,7 +34,7 @@
 				<label for="recherche.statut">Statut</label>
 	   			<select class="form-control" name="recherche.statut" required>
 	   				<c:forEach items="${statutRecherche}" var="item">
-						<option><c:out value="${item}" /></option>
+						<option>${item}</option>
 	   				</c:forEach>
 	    		</select>
 			</div>

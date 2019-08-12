@@ -7,13 +7,13 @@
 <script src="webjars/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 <head>
 	<meta charset="UTF-8">
-	<title>Historique - ${entreprise}" for ${poste}</title>
+	<title>Historique - ${entreprise} for ${poste}</title>
     <link href="webjars/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
 <div class="container-fluid">
 	<h2>Historique</h2>
-	<h3>Entreprise : offre</h3>
+	<h3>${entreprise} : ${poste}</h3>
 	
 	<table class="table table-striped">
 		<caption>Your History</caption>
@@ -28,16 +28,16 @@
 		<tbody>
   			<c:forEach items="${historique}" var="item">
     		<tr>
-    	  		<th scope="row">${item.id}"</th>
-    	  		<td>${item.rechercheId}"</td>
-    	  		<td>${item.date}"</td>
-    	  		<td>${item.modification}"</td>
+    	  		<th scope="row">${item.id}</th>
+    	  		<td>${item.rechercheId}</td>
+    	  		<td>${item.date}</td>
+    	  		<td>${item.modification}</td>
     		</tr>
   			</c:forEach>
   		</tbody>
 	</table>
 
-	<p><a class="btn btn-primary" href="/home" role="button">Back</a></p>
+	<p><a class="btn btn-primary" href="home" role="button">Back</a></p>
 
 </div>
 </body>
