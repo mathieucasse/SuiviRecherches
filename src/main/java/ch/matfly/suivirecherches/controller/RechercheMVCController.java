@@ -1,5 +1,9 @@
 package ch.matfly.suivirecherches.controller;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -35,6 +39,8 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @SessionAttributes("recherches")
 public class RechercheMVCController {
+	
+	static final SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
 	@Autowired
 	private RechercheRepo rechercheRepo;
@@ -72,7 +78,9 @@ public class RechercheMVCController {
 	@PostMapping("/addRecherche")
 	@ResponseBody
 	public RedirectView addRecherche(
+			@RequestParam(name = "recherche.creationDate") String creationDate,
 			@RequestParam(name = "recherche.poste") String poste,
+			@RequestParam(name = "recherche.client") String client,
 			@RequestParam(name = "recherche.statut") String statut,
 			@RequestParam(name = "personne.nom") String personneNom,
 			@RequestParam(name = "personne.prenom") String personnePrenom,
@@ -80,10 +88,11 @@ public class RechercheMVCController {
 			@RequestParam(name = "personne.email") String personneEmail,
 			@RequestParam(name = "entreprise.nom") String entrepriseNom,
 			@RequestParam(name = "entreprise.tel") String entrepriseTel
-			) {
+			) throws Exception {
 		Entreprise e = new Entreprise(entrepriseNom, entrepriseTel, null);
+		
 		Personne p = new Personne(personneNom, personnePrenom, personneTel, personneEmail);
-		Recherche recherche = new Recherche(poste, statut,e,p);
+		Recherche recherche = new Recherche(sdf.parse(creationDate),poste,client, statut,e,p);
 		recherche=rechercheRepo.save(recherche);
 		log.info("addRecherche : " + recherche.toString());
 		historiqueRepo.save(new Historique(recherche.getId(), " --- CREATE --- "));
@@ -135,7 +144,7 @@ public class RechercheMVCController {
 	}
 	@PostMapping("/updateRecherche")
 	@ResponseBody
-	public RedirectView updateRecherche(@RequestParam Map<String, String> parameters) {
+	public RedirectView updateRecherche(@RequestParam Map<String, String> parameters) throws Exception {
 
 		log.info("==== updateRecherche Called !!! ");
 		log.info("==== "+ parameters.size()+" !!! ");
@@ -149,9 +158,18 @@ public class RechercheMVCController {
 		if((tmpRp = lookFor("id", parameters))!=null){
 			Recherche recherche = rechercheRepo.findById(Long.valueOf(tmpRp)).orElse(null);
 			if(null!=recherche) {
+				
+				rp = "recherche.creationDate";
+				if((tmpRp = lookForAndAudit(rp, parameters, sdf.format(recherche.getContactDate()), sb))!= null) {
+					recherche.setContactDate(sdf.parse(tmpRp));
+				}
 				rp = "recherche.poste";
 				if((tmpRp = lookForAndAudit(rp, parameters, recherche.getPoste(), sb))!= null) {
 					recherche.setPoste(tmpRp);
+				}
+				rp = "recherche.client";
+				if((tmpRp = lookForAndAudit(rp, parameters, recherche.getClient(), sb))!= null) {
+					recherche.setClient(tmpRp);
 				}
 				rp = "recherche.statut";
 				if((tmpRp = lookForAndAudit(rp, parameters, recherche.getStatut(), sb))!= null) {
@@ -195,9 +213,17 @@ public class RechercheMVCController {
 
 		return new RedirectView("home");
 	}
+	
+	@GetMapping("/test")
+	public String test() {
+		
+		return "test.jsp";
+	}
+	
 	static String lookFor(String rp, Map<String, String> map) {
 		log.debug("======= Looking for " + rp);
-		return map.containsKey(rp) ? map.get(rp) : null;
+		String ret = map.get(rp);
+		return (null != ret)? ret:"-";
 	}
 
 
@@ -207,10 +233,14 @@ public class RechercheMVCController {
 	 * @param valObj
 	 * @return val to set or null if not modified
 	 */
-	static String lookForAndAudit(String rp, Map<String, String> map, String valObj, StringBuilder sb) {
+	
+	// TODO  fix null values in valObj
+	static String lookForAndAudit(String rp, Map<String, String> map, String valObj, StringBuilder sb ) {
+		log.debug("=========== lookForAndAudit : rp = " + rp +" ,  map = " + map + " , valObj = " + valObj + " , sb = " + sb);
 		String tmpRp = lookFor(rp, map);
+		if(valObj == null) valObj = "";
 		if(!valObj.equals(tmpRp)) {
-			log.debug(rp + "changed from " + valObj + " to "+tmpRp);
+			log.debug(rp + "changed from " + valObj + " to " + tmpRp);
 			sb.append(rp + "[" + valObj + "==>" + tmpRp + "], ");
 			return tmpRp;
 		}

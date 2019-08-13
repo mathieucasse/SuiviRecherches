@@ -8,10 +8,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -76,7 +76,9 @@ public class RechercheMVCControllerTest {
 	@Test
     public void shouldReturnAddRecherche() throws Exception {
         this.mockMvc.perform(post("/addRecherche")
+        						.param("recherche.creationDate" , "01/10/2010" )
         						.param("recherche.poste" , "recherche.poste" )
+        						.param("recherche.client" , "recherche.client" )
         						.param("recherche.statut", "recherche.statut")
         						.param("personne.nom"    , "personne.nom"    )
         						.param("personne.prenom" , "personne.prenom" )
@@ -96,10 +98,10 @@ public class RechercheMVCControllerTest {
 		Adresse adresse = new Adresse("rue 1", "ville 1", "cp 1");
 		Entreprise entreprise = new Entreprise("nom 1", "prenom 1", adresse);
 		Personne personne = new Personne("nom 1", "prenom 1", "telephone 1", "email 1");
-		Recherche recherche = new Recherche( "poste 1", "KO",entreprise,personne);
+		Recherche recherche = new Recherche(new Date(), "poste 1","client 1", "KO",entreprise,personne);
 		recherche.setId(Long.valueOf("1"));
 		System.out.println("================ recherche = " +recherche);
-		Recherche recherche2 = new Recherche( "poste 2", "EN_COURS",entreprise,personne);
+		Recherche recherche2 = new Recherche(new Date(), "poste 2","client 2", "EN_COURS",entreprise,personne);
 		recherche2.setId(Long.valueOf("2"));
 		System.out.println("================ recherche2 = " +recherche2);
 		List<Recherche> lr = new ArrayList<>();
@@ -134,6 +136,7 @@ public class RechercheMVCControllerTest {
 		
         this.mockMvc.perform(post("/updateRecherche").param("id" , "2" )
 								        		.param("recherche.poste" , "recherche.poste" )
+								        		.param("recherche.client" , "recherche.client" )
 												.param("recherche.statut", "recherche.statut")
 												.param("personne.nom"    , "personne.nom"    )
 												.param("personne.prenom" , "personne.prenom" )

@@ -1,6 +1,8 @@
 package ch.matfly.suivirecherches.model;
 
-import java.time.LocalDate;
+import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
@@ -18,14 +20,19 @@ import lombok.Setter;
 @Data
 @Entity
 public class Recherche {
+	
+//	static final SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
 	@Basic
-	private LocalDate creationDate;
+	private Date contactDate;
 	
 	@Getter @Setter private String poste;
+	
+	@Getter @Setter private String client;
 	
 	@Getter @Setter private String statut;
 	
@@ -35,15 +42,20 @@ public class Recherche {
 	@OneToOne(cascade = CascadeType.ALL) @JoinColumn( name = "personne_id" )
 	@Setter private Personne personne;
 	
+//	public String getFormattedDate() {
+//		return sdf.format(this.contactDate);
+//	}
+	
 	@Override
 	public String toString() {
-		return "Recherche [id=" + id + ", creationDate=" + creationDate + ", poste=" + poste + ", statut=" + statut
+		return "Recherche [id=" + id + ", contactDate=" + contactDate + ", client=" + client + ", poste=" + poste + ", statut=" + statut
 				+ ", entreprise=" + entreprise + ", personne=" + personne + "]";
 	}
 
-	public Recherche(String poste, String statut, Entreprise entreprise, Personne personne) {
+	public Recherche(Date conatctDate, String poste, String client, String statut, Entreprise entreprise, Personne personne) {
 		super();
-		this.creationDate = LocalDate.now();
+		this.contactDate = conatctDate;
+		this.client = client;
 		this.poste = poste;
 		this.statut = statut;
 		this.entreprise = entreprise;
@@ -52,7 +64,7 @@ public class Recherche {
 
 	public Recherche( String poste, String statut) {
 		super();
-		this.creationDate = LocalDate.now();
+		this.contactDate = new Date();
 		this.poste = poste;
 		this.statut = statut;
 	}
