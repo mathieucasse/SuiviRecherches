@@ -2,8 +2,6 @@ package ch.matfly.suivirecherches.controller;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -11,11 +9,9 @@ import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
@@ -40,7 +36,9 @@ import lombok.extern.slf4j.Slf4j;
 @SessionAttributes("recherches")
 public class RechercheMVCController {
 	
-	static final SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+	private static final String STATUT_RECHERCHE = "statutRecherche";
+	
+	private final SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
 	@Autowired
 	private RechercheRepo rechercheRepo;
@@ -64,14 +62,14 @@ public class RechercheMVCController {
 		ModelAndView mv = new ModelAndView("home.jsp");
 		List<Recherche> recherches = rechercheRepo.findAll();
 		mv.addObject("recherches", recherches);
-		mv.addObject("statutRecherche",RechercheMVCController.getStatutRecherche());
+		mv.addObject(STATUT_RECHERCHE, RechercheMVCController.getStatutRecherche());
 		return mv;
 	}
 
 	@GetMapping("/rechercheForm")
 	public ModelAndView rechercheForm() {
 		ModelAndView mv = new ModelAndView("rechercheForm.jsp");
-		mv.addObject("statutRecherche",RechercheMVCController.getStatutRecherche());
+		mv.addObject(STATUT_RECHERCHE, RechercheMVCController.getStatutRecherche());
 		return mv;
 	}
 
@@ -88,7 +86,7 @@ public class RechercheMVCController {
 			@RequestParam(name = "personne.email") String personneEmail,
 			@RequestParam(name = "entreprise.nom") String entrepriseNom,
 			@RequestParam(name = "entreprise.tel") String entrepriseTel
-			) throws Exception {
+			) throws ParseException {
 		Entreprise e = new Entreprise(entrepriseNom, entrepriseTel, null);
 		
 		Personne p = new Personne(personneNom, personnePrenom, personneTel, personneEmail);
@@ -103,9 +101,8 @@ public class RechercheMVCController {
 	@ResponseBody
 	public RedirectView delRecherche(@RequestParam(name = "id") String id) {
 		Recherche recherche = rechercheRepo.findById(Long.valueOf(id)).orElse(null);
-		log.info("delRecherche : " + recherche.toString());
-		System.out.println( "==== delRecherche : " + recherche.toString());
-		if(null!=recherche) {
+		if(null != recherche) {
+			log.info("====delRecherche : " + recherche.toString());
 			Historique h = new Historique(recherche.getId(), " --- DELETE --- ");
 			historiqueRepo.save(h);
 			rechercheRepo.delete(recherche);
@@ -122,9 +119,9 @@ public class RechercheMVCController {
 		Recherche recherche = recherches.stream()
 								.filter(rech -> Long.valueOf(id).equals(rech.getId()))
 								.findAny().orElse(null);
-		log.info("==== editRecherche : " + recherche.toString());
+		log.info("==== editRecherche : " + ((null != recherche)?recherche.toString():"empty"));
 		mv.addObject("recherche",recherche);
-		mv.addObject("statutRecherche",RechercheMVCController.getStatutRecherche());
+		mv.addObject(STATUT_RECHERCHE, RechercheMVCController.getStatutRecherche());
 		return mv;
 	}
 
@@ -144,7 +141,7 @@ public class RechercheMVCController {
 	}
 	@PostMapping("/updateRecherche")
 	@ResponseBody
-	public RedirectView updateRecherche(@RequestParam Map<String, String> parameters) throws Exception {
+	public RedirectView updateRecherche(@RequestParam Map<String, String> parameters) throws ParseException {
 
 		log.info("==== updateRecherche Called !!! ");
 		log.info("==== "+ parameters.size()+" !!! ");
@@ -220,12 +217,7 @@ public class RechercheMVCController {
 		return "test.jsp";
 	}
 	
-	static String lookFor(String rp, Map<String, String> map) {
-		log.debug("======= Looking for " + rp);
-		String ret = map.get(rp);
-		return (null != ret)? ret:"-";
-	}
-
+	
 
 	/**
 	 * @param rp
@@ -246,4 +238,11 @@ public class RechercheMVCController {
 		}
 		return null;
 	}
+	
+	static String lookFor(String rp, Map<String, String> map) {
+		log.debug("======= Looking for " + rp);
+		String ret = map.get(rp);
+		return (null != ret)? ret:"-";
+	}
+
 }	

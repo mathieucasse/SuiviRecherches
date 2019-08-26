@@ -2,11 +2,15 @@ package ch.matfly.suivirecherches.model;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
+
+import org.hibernate.envers.Audited;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import lombok.Data;
 import lombok.Getter;
@@ -14,6 +18,7 @@ import lombok.Setter;
 
 @Data
 @Entity
+@Audited
 public class Entreprise {
 	
 	@Id

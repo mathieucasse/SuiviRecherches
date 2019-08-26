@@ -1,7 +1,5 @@
 package ch.matfly.suivirecherches.model;
 
-import java.text.SimpleDateFormat;
-import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 import javax.persistence.Basic;
@@ -13,15 +11,16 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 
+import org.hibernate.envers.Audited;
+
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
 @Data
 @Entity
+@Audited
 public class Recherche {
-	
-//	static final SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,10 +40,6 @@ public class Recherche {
 	
 	@OneToOne(cascade = CascadeType.ALL) @JoinColumn( name = "personne_id" )
 	@Setter private Personne personne;
-	
-//	public String getFormattedDate() {
-//		return sdf.format(this.contactDate);
-//	}
 	
 	@Override
 	public String toString() {

@@ -6,10 +6,13 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
 
+import org.hibernate.envers.Audited;
+
 import lombok.Data;
 
 @Data
 @Entity
+@Audited
 public class Adresse {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
