@@ -1,4 +1,4 @@
-package ch.matfly.suivirecherches.model;
+package ch.matfly.suivirecherches.util;
 
 public enum TelEnum {
 	DOMICILE,BUREAU,MOBILE

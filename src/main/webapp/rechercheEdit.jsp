@@ -56,7 +56,7 @@
 	   			<select class="form-control" name="recherche.statut" id="recherche.statut" required>
 	   				
 	   				<c:forEach items="${statutRecherche}" var="item">
-						<option <c:if test="${item eq recherche.statut}">selected="selected"</c:if> >${item}</option>
+						<option <c:if test="${item eq recherche.statut}">selected="selected"</c:if> >${item.value}</option>
         			</c:forEach>
 	    		</select>
 			</div>

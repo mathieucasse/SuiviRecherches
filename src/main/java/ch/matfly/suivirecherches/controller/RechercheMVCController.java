@@ -2,8 +2,6 @@ package ch.matfly.suivirecherches.controller;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -11,11 +9,9 @@ import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
@@ -24,11 +20,12 @@ import org.springframework.web.servlet.view.RedirectView;
 
 import ch.matfly.suivirecherches.dao.HistoriqueRepo;
 import ch.matfly.suivirecherches.dao.RechercheRepo;
+import ch.matfly.suivirecherches.dao.RechercheStatutRepo;
 import ch.matfly.suivirecherches.model.Entreprise;
 import ch.matfly.suivirecherches.model.Historique;
 import ch.matfly.suivirecherches.model.Personne;
 import ch.matfly.suivirecherches.model.Recherche;
-import ch.matfly.suivirecherches.model.StatutRecherche;
+import ch.matfly.suivirecherches.model.RechercheStatut;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -40,21 +37,27 @@ import lombok.extern.slf4j.Slf4j;
 @SessionAttributes("recherches")
 public class RechercheMVCController {
 	
-	static final SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+	private static final String STATUT_RECHERCHE = "statutRecherche";
+
+	private final SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
 	@Autowired
 	private RechercheRepo rechercheRepo;
 
 	@Autowired
 	private HistoriqueRepo historiqueRepo;
+	
+	@Autowired
+	private RechercheStatutRepo rechercheStatutRepo;
 
-	static List<String> statutRecherche;
+	private List<String> statutRecherche;
 
-	public static List<String> getStatutRecherche() {
+	public List<String> getStatutRecherche() {
 		if(statutRecherche == null) {
-			RechercheMVCController.statutRecherche = Stream.of(StatutRecherche.values())
-					.map(Enum::name)
-					.collect(Collectors.toList());		
+			this.statutRecherche = rechercheStatutRepo.findAll().stream().map(x -> x.getValue()).collect(Collectors.toList());
+//			RechercheRestController.statutRecherche = Stream.of(RechercheStatut.values())
+//					.map(Enum::name)
+//					.collect(Collectors.toList());		
 		}
 		return statutRecherche;
 	}
@@ -64,14 +67,14 @@ public class RechercheMVCController {
 		ModelAndView mv = new ModelAndView("home.jsp");
 		List<Recherche> recherches = rechercheRepo.findAll();
 		mv.addObject("recherches", recherches);
-		mv.addObject("statutRecherche",RechercheMVCController.getStatutRecherche());
+		mv.addObject(STATUT_RECHERCHE, this.getStatutRecherche());
 		return mv;
 	}
 
 	@GetMapping("/rechercheForm")
 	public ModelAndView rechercheForm() {
 		ModelAndView mv = new ModelAndView("rechercheForm.jsp");
-		mv.addObject("statutRecherche",RechercheMVCController.getStatutRecherche());
+		mv.addObject(STATUT_RECHERCHE, this.getStatutRecherche());
 		return mv;
 	}
 
@@ -88,7 +91,7 @@ public class RechercheMVCController {
 			@RequestParam(name = "personne.email") String personneEmail,
 			@RequestParam(name = "entreprise.nom") String entrepriseNom,
 			@RequestParam(name = "entreprise.tel") String entrepriseTel
-			) throws Exception {
+			) throws ParseException {
 		Entreprise e = new Entreprise(entrepriseNom, entrepriseTel, null);
 		
 		Personne p = new Personne(personneNom, personnePrenom, personneTel, personneEmail);
@@ -103,9 +106,9 @@ public class RechercheMVCController {
 	@ResponseBody
 	public RedirectView delRecherche(@RequestParam(name = "id") String id) {
 		Recherche recherche = rechercheRepo.findById(Long.valueOf(id)).orElse(null);
-		log.info("delRecherche : " + recherche.toString());
-		System.out.println( "==== delRecherche : " + recherche.toString());
 		if(null!=recherche) {
+			log.info("delRecherche : " + recherche.toString());
+			log.info( "==== delRecherche : " + recherche.toString());
 			Historique h = new Historique(recherche.getId(), " --- DELETE --- ");
 			historiqueRepo.save(h);
 			rechercheRepo.delete(recherche);
@@ -124,7 +127,7 @@ public class RechercheMVCController {
 								.findAny().orElse(null);
 		log.info("==== editRecherche : " + recherche.toString());
 		mv.addObject("recherche",recherche);
-		mv.addObject("statutRecherche",RechercheMVCController.getStatutRecherche());
+		mv.addObject(STATUT_RECHERCHE, this.getStatutRecherche());
 		return mv;
 	}
 
@@ -144,7 +147,7 @@ public class RechercheMVCController {
 	}
 	@PostMapping("/updateRecherche")
 	@ResponseBody
-	public RedirectView updateRecherche(@RequestParam Map<String, String> parameters) throws Exception {
+	public RedirectView updateRecherche(@RequestParam Map<String, String> parameters) throws ParseException {
 
 		log.info("==== updateRecherche Called !!! ");
 		log.info("==== "+ parameters.size()+" !!! ");
