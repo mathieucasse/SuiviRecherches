@@ -1,5 +1,7 @@
 package ch.matfly.suivirecherches.model;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import javax.persistence.Basic;
@@ -10,15 +12,22 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
+import javax.persistence.Transient;
+
+import org.hibernate.envers.Audited;
 
 import ch.matfly.suivirecherches.util.AngularRecherche;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
+@Audited
 @Data
 @Entity
 public class Recherche {
+	
+	@Transient
+	private final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -85,7 +94,12 @@ public class Recherche {
 	}
 
 	public void updateWith(AngularRecherche aRecherche) {
-		this.contactDate = aRecherche.getDateContact();
+		try {
+			this.contactDate = sdf.parse(aRecherche.getDateContact());
+		}catch(ParseException e) {
+			e.printStackTrace();
+			this.contactDate = new Date();
+		}
 		this.poste = aRecherche.getPoste();
 		this.client = aRecherche.getClient();
 		this.statut = aRecherche.getStatut();

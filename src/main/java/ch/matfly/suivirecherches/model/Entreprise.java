@@ -8,10 +8,13 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 
+import org.hibernate.envers.Audited;
+
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
+@Audited
 @Data
 @Entity
 public class Entreprise {

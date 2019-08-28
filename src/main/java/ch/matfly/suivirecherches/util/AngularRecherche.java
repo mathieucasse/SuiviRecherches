@@ -2,7 +2,8 @@ package ch.matfly.suivirecherches.util;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
+
+import org.springframework.data.annotation.Transient;
 
 import ch.matfly.suivirecherches.model.Entreprise;
 import ch.matfly.suivirecherches.model.Personne;
@@ -12,10 +13,8 @@ import lombok.Data;
 @Data
 public class AngularRecherche {
 	
-	private final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-	
 	private Long id;
-	private Date dateContact;
+	private String dateContact;
 	private String poste;
 	private String statut;
 	private String assignationORP;
@@ -31,7 +30,7 @@ public class AngularRecherche {
 	public AngularRecherche(Recherche recherche) {
 		super();
 		this.id = recherche.getId();
-		this.dateContact = recherche.getContactDate();
+		this.dateContact = new SimpleDateFormat("yyyy-MM-dd").format(recherche.getContactDate());
 		this.poste = recherche.getPoste();
 		this.statut = recherche.getStatut();
 		this.assignationORP = recherche.getAssignationORP();
@@ -48,7 +47,7 @@ public class AngularRecherche {
 	public Recherche buildRecherche() throws ParseException{
 		Entreprise entreprise = new Entreprise(this.entreprise, null, null);
 		Personne personne = new Personne(contactNom, contactPrenom, contactTelephone, contactEmail);
-		return new Recherche(id, dateContact,poste,client,statut, assignationORP,
+		return new Recherche(id, new SimpleDateFormat("yyyy-MM-dd").parse(dateContact),poste,client,statut, assignationORP,
 				tauxActivite.toString(), approcheMedia, entreprise, personne);
 		
 	}
@@ -58,13 +57,14 @@ public class AngularRecherche {
 			String contactPrenom, String contactEmail, String contactTelephone) {
 		super();
 		this.id = id;
-		try {
-			this.dateContact = sdf.parse(dateContact);
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			this.dateContact = new Date();
-		}
+//		try {
+//			this.dateContact = sdf.parse(dateContact);
+//		} catch (ParseException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//			this.dateContact = new Date();
+//		}
+		this.dateContact = dateContact;
 		this.poste = poste;
 		this.statut = statut;
 		this.assignationORP = assignationORP;

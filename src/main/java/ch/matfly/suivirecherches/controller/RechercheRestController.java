@@ -32,6 +32,7 @@ import lombok.extern.slf4j.Slf4j;
  * @author mathieucasse
  *
  */
+@CrossOrigin(origins = {"http://localhost:4200", "http://localhost:4202"}, maxAge = 3600)
 @RestController
 @Slf4j
 @RequestMapping("rest")
@@ -56,13 +57,11 @@ public class RechercheRestController {
 		return statutRecherche;
 	}
 
-	@CrossOrigin
 	@GetMapping(value="recherches")
 	public List<AngularRecherche> getRecherches() {
 		return rechercheRepo.findAll().stream().map(AngularRecherche::new).collect(Collectors.toList());
 	}
 
-	@CrossOrigin
 	@PostMapping("updateRecherche")
 	@ResponseBody
 	public ResponseEntity<AngularRecherche> updateRecherche(@RequestBody AngularRecherche aRecherche) throws URISyntaxException, ParseException {
@@ -87,7 +86,6 @@ public class RechercheRestController {
 		}
 	}
 
-	@CrossOrigin
 	@PostMapping("addRecherche")
 	@ResponseBody
 	public ResponseEntity<AngularRecherche>  addRecherche(@RequestBody AngularRecherche aRecherche) throws URISyntaxException, ParseException {
@@ -108,7 +106,6 @@ public class RechercheRestController {
 
 	}
 	
-	@CrossOrigin
 	@DeleteMapping("delRecherche/{id}")
 	public ResponseEntity<AngularRecherche> delRecherche(@PathVariable String id) {
 		log.info("========== delRecherche  : " + id);
