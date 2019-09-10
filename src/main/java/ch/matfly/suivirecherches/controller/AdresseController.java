@@ -20,7 +20,7 @@
 //	
 //
 //	@GetMapping(value="/adresses")
-//	public List<Adresse> getAdresses() {
+//	public List<AdresseAudit> getAdresses() {
 //		return adresseRepo.findAll();
 //	}
 //	
@@ -39,13 +39,13 @@
 ////	}
 ////	
 //	@PostMapping("/adresse")
-//	public Adresse addAdresse(@RequestBody Adresse adresse) {
+//	public AdresseAudit addAdresse(@RequestBody AdresseAudit adresse) {
 //		adresseRepo.save(adresse);
 //		return adresse;
 //	}
 //	
 //	@PutMapping("/adresse")
-//	public Adresse saveOrUpdateAdresse(@RequestBody Adresse adresse) {
+//	public AdresseAudit saveOrUpdateAdresse(@RequestBody AdresseAudit adresse) {
 //		adresseRepo.save(adresse);
 //		return adresse;
 //	}

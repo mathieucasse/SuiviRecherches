@@ -1,9 +1,7 @@
-package ch.matfly.suivirecherches.util;
+package ch.matfly.suivirecherches.model.dto;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-
-import org.springframework.data.annotation.Transient;
 
 import ch.matfly.suivirecherches.model.Entreprise;
 import ch.matfly.suivirecherches.model.Personne;
@@ -11,7 +9,7 @@ import ch.matfly.suivirecherches.model.Recherche;
 import lombok.Data;
 
 @Data
-public class AngularRecherche {
+public class AngularRechercheDto {
 	
 	private Long id;
 	private String dateContact;
@@ -27,7 +25,7 @@ public class AngularRecherche {
 	private String contactEmail;
 	private String contactTelephone;
 	
-	public AngularRecherche(Recherche recherche) {
+	public AngularRechercheDto(Recherche recherche) {
 		super();
 		this.id = recherche.getId();
 		this.dateContact = new SimpleDateFormat("yyyy-MM-dd").format(recherche.getContactDate());
@@ -52,7 +50,7 @@ public class AngularRecherche {
 		
 	}
 
-	public AngularRecherche(Long id, String dateContact, String poste, String statut, String assignationORP,
+	public AngularRechercheDto(Long id, String dateContact, String poste, String statut, String assignationORP,
 			Integer tauxActivite, String approcheMedia, String client, String entreprise, String contactNom,
 			String contactPrenom, String contactEmail, String contactTelephone) {
 		super();

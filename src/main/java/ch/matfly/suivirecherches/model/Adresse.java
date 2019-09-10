@@ -8,22 +8,32 @@ import javax.persistence.OneToOne;
 
 import org.hibernate.envers.Audited;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 @Audited
-@Data
 @Entity
+@Data
+@NoArgsConstructor
+@AllArgsConstructor(staticName="of")
+@EqualsAndHashCode(of= {"id","rue", "ville","cp","entreprise"})
+@ToString(of= {"id","rue", "ville","cp","entreprise"})
 public class Adresse {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 
-	private String rue;
-	private String ville;
-	private String cp;
+	@Getter @Setter private String rue;
+	@Getter @Setter private String ville;
+	@Getter @Setter private String cp;
 	
 	@OneToOne(mappedBy = "adresse")
-    private Entreprise entreprise;
+	@Setter private Entreprise entreprise;
 
 	public Adresse(String rue, String ville, String cp) {
 		super();
@@ -31,16 +41,6 @@ public class Adresse {
 		this.ville = ville;
 		this.cp = cp;
 	}
-
-	public Adresse() {
-		super();
-	}
-
-	@Override
-	public String toString() {
-		return "Adresse [id=" + id + ", rue=" + rue + ", ville=" + ville + ", cp=" + cp + "]";
-	}
-	
 }
 
 

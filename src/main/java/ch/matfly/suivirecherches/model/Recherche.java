@@ -16,14 +16,25 @@ import javax.persistence.Transient;
 
 import org.hibernate.envers.Audited;
 
-import ch.matfly.suivirecherches.util.AngularRecherche;
+import ch.matfly.suivirecherches.model.dto.AngularRechercheDto;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
 
 @Audited
 @Data
 @Entity
+@Slf4j
+@NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode(of= {"id","contactDate", "poste","client","statut","assignationORP","tauxActivite","approcheMedia","entreprise","personne"})
+@ToString(of= {"id","contactDate", "poste","client","statut","assignationORP","tauxActivite","approcheMedia","entreprise","personne"})
 public class Recherche {
 	
 	@Transient
@@ -33,9 +44,7 @@ public class Recherche {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Basic
-	private Date contactDate;
-
+	@Basic private Date contactDate;
 	@Getter @Setter private String poste;
 	@Getter @Setter private String client;
 	@Getter @Setter private String statut;
@@ -67,37 +76,11 @@ public class Recherche {
 		this.statut = statut;
 	}
 
-	public Recherche() {
-		super();
-	}
-
-	@Override
-	public String toString() {
-		return "Recherche [id=" + id + ", contactDate=" + contactDate + ", poste=" + poste + ", client=" + client
-				+ ", statut=" + statut + ", assignationORP=" + assignationORP + ", tauxActivite=" + tauxActivite
-				+ ", approcheMedia=" + approcheMedia + ", entreprise=" + entreprise + ", personne=" + personne + "]";
-	}
-
-	public Recherche(Long id, Date contactDate, String poste, String client, String statut, String assignationORP,
-			String tauxActivite, String approcheMedia, Entreprise entreprise, Personne personne) {
-		super();
-		this.id = id;
-		this.contactDate = contactDate;
-		this.poste = poste;
-		this.client = client;
-		this.statut = statut;
-		this.assignationORP = assignationORP;
-		this.tauxActivite = tauxActivite;
-		this.approcheMedia = approcheMedia;
-		this.entreprise = entreprise;
-		this.personne = personne;
-	}
-
-	public void updateWith(AngularRecherche aRecherche) {
+	public void updateWith(AngularRechercheDto aRecherche) {
 		try {
 			this.contactDate = sdf.parse(aRecherche.getDateContact());
 		}catch(ParseException e) {
-			e.printStackTrace();
+			log.info(e.toString());
 			this.contactDate = new Date();
 		}
 		this.poste = aRecherche.getPoste();

@@ -10,13 +10,21 @@ import javax.persistence.OneToOne;
 
 import org.hibernate.envers.Audited;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 @Audited
-@Data
 @Entity
+@Data
+@NoArgsConstructor
+@AllArgsConstructor(staticName="of")
+@EqualsAndHashCode(of= {"id","nom", "telephone"})
+@ToString(of= {"id","nom", "telephone"})
 public class Entreprise {
 	
 	@Id
@@ -24,7 +32,6 @@ public class Entreprise {
 	private Long id;
 	
 	@Getter @Setter  private String nom;
-	
 	@Getter @Setter  private String telephone;
 	
 	@OneToOne(cascade = CascadeType.ALL) @JoinColumn( name = "adresse_id" )
@@ -39,17 +46,4 @@ public class Entreprise {
 		this.telephone = telephone;
 		this.adresse = adresse;
 	}
-
-	public Entreprise() {
-		super();
-	}
-
-	@Override
-	public String toString() {
-		return "Entreprise [id=" + id + ", nom=" + nom + ", telephone=" + telephone + ", adresse=" + adresse + "]";
-	}
-	
-	
-	
-	
 }

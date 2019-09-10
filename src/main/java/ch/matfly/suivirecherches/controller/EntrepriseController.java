@@ -19,18 +19,18 @@
 //	EntrepriseRepo entrepriseRepo;
 //	
 //	@GetMapping(value="/entreprises")
-//	public List<Entreprise> getEntreprises() {
+//	public List<EntrepriseAudit> getEntreprises() {
 //		return entrepriseRepo.findAll();
 //	}
 //	
 //	@PostMapping("/entreprise")
-//	public Entreprise addEntreprise(@RequestBody Entreprise entreprise) {
+//	public EntrepriseAudit addEntreprise(@RequestBody EntrepriseAudit entreprise) {
 //		entrepriseRepo.save(entreprise);
 //		return entreprise;
 //	}
 //	
 //	@PutMapping("/entreprise")
-//	public Entreprise saveOrUpdateEntreprise(@RequestBody Entreprise entreprise) {
+//	public EntrepriseAudit saveOrUpdateEntreprise(@RequestBody EntrepriseAudit entreprise) {
 //		entrepriseRepo.save(entreprise);
 //		return entreprise;
 //	}

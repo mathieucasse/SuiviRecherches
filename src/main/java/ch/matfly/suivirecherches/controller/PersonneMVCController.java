@@ -24,7 +24,7 @@ public class PersonneMVCController {
 	public ModelAndView indexPersonnes() {
 		ModelAndView mv = new ModelAndView("indexPersonnes.jsp");
 		List<Personne> personnes = personneRepo.findAll();
-//		Personne personnes = personneRepo.findById(3l).orElse(new Personne());
+//		PersonneAudit personnes = personneRepo.findById(3l).orElse(new PersonneAudit());
 		mv.addObject("personnes",personnes);
 		System.out.println("adding : " + personnes.toString());
 		System.out.println("fetching : ");

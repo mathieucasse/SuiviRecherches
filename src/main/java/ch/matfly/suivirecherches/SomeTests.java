@@ -30,17 +30,17 @@
 //	
 //	@Override
 //	public void run(String... args) throws Exception {
-//		Adresse adresse1 = new Adresse("rue 1", "ville 1", "cp 1");
-//		Entreprise personne1 = new Entreprise("nom 1", "prenom 1", adresse1);
+//		AdresseAudit adresse1 = new AdresseAudit("rue 1", "ville 1", "cp 1");
+//		EntrepriseAudit personne1 = new EntrepriseAudit("nom 1", "prenom 1", adresse1);
 //		
 //		personne1 = entrepriseRepo.save(personne1);
 //		int i =0;
 //		System.out.println(" ======== "+ i++ +" ======="+personne1);
 //		
-//		Entreprise e = entrepriseRepo.findById(personne1.getId()).orElse(null);
+//		EntrepriseAudit e = entrepriseRepo.findById(personne1.getId()).orElse(null);
 //		System.out.println(" ======== "+ i++ +" ======="+e);
 //		
-//		Adresse a = e.getAdresse();
+//		AdresseAudit a = e.getAdresse();
 //		System.out.println(" ======== "+ i++ +" ======="+a);
 //		adresseRepo.delete(a);
 //		adresseRepo.flush();
@@ -61,11 +61,11 @@
 //		System.out.println(" ======== "+ i++ +" ======="+a);
 //		
 //		
-//		Personne personne = new Personne("nom 1", "prenom 1", "telephone 1", "email 1");
+//		PersonneAudit personne = new PersonneAudit("nom 1", "prenom 1", "telephone 1", "email 1");
 //		personne = personneRepo.save(personne);
 //		System.out.println(" ======== "+ i++ +" ======="+personne);	
 //		
-//		Recherche recherche = new Recherche( "poste 1", "KO");
+//		RechercheAudit recherche = new RechercheAudit( "poste 1", "KO");
 //		System.out.println(" ======== "+ i++ +" ======="+recherche);
 //		recherche = rechercheRepo.save(recherche);
 //		System.out.println(" ======== "+ i++ +" ======="+recherche);

@@ -21,18 +21,18 @@
 //	PersonneRepo personneRepo;
 //	
 //	@GetMapping(value="/personnes")
-//	public List<Personne> getPersonnes() {
+//	public List<PersonneAudit> getPersonnes() {
 //		return personneRepo.findAll();
 //	}
 //	
 //	@PostMapping("/personne")
-//	public Personne addPersonne(@RequestBody Personne personne) {
+//	public PersonneAudit addPersonne(@RequestBody PersonneAudit personne) {
 //		personneRepo.save(personne);
 //		return personne;
 //	}
 //	
 //	@PutMapping("/personne")
-//	public Personne saveOrUpdatePersonne(@RequestBody Personne personne) {
+//	public PersonneAudit saveOrUpdatePersonne(@RequestBody PersonneAudit personne) {
 //		personneRepo.save(personne);
 //		return personne;
 //	}

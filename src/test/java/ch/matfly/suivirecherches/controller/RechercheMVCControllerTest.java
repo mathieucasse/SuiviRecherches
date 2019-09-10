@@ -8,7 +8,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -50,7 +49,7 @@ public class RechercheMVCControllerTest {
 	
 	@Test
     public void shouldReturnDefaultHome() throws Exception {
-        this.mockMvc.perform(get("/"))
+        this.mockMvc.perform(get("recherches/"))
         		.andDo(print())
         		.andExpect(status().isOk())
         		.andExpect(view().name("home.jsp"))

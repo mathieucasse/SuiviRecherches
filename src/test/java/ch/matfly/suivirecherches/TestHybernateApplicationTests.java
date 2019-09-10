@@ -1,7 +1,6 @@
 package ch.matfly.suivirecherches;
 
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -43,7 +42,6 @@ public class TestHybernateApplicationTests {
 		adresseRepo.flush();
 		System.out.println(" ======== "+ i++ +" ======="+p);
 		
-		a = adresseRepo.findById(a.getId()).orElse(null);
 		System.out.println(" ======== "+ i++ +" ======="+a);
 		assertNotNull("Shoul not be null !!", a);
 		

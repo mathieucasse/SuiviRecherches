@@ -5,16 +5,15 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
@@ -25,7 +24,6 @@ import ch.matfly.suivirecherches.model.Entreprise;
 import ch.matfly.suivirecherches.model.Historique;
 import ch.matfly.suivirecherches.model.Personne;
 import ch.matfly.suivirecherches.model.Recherche;
-import ch.matfly.suivirecherches.model.RechercheStatut;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -34,30 +32,24 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Controller
 @Slf4j
-@SessionAttributes("recherches")
+//@RequestMapping("mvc")
 public class RechercheMVCController {
 	
 	private static final String STATUT_RECHERCHE = "statutRecherche";
 
 	private final SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
-	@Autowired
-	private RechercheRepo rechercheRepo;
+	@Autowired private RechercheRepo rechercheRepo;
 
-	@Autowired
-	private HistoriqueRepo historiqueRepo;
+	@Autowired private HistoriqueRepo historiqueRepo;
 	
-	@Autowired
-	private RechercheStatutRepo rechercheStatutRepo;
+	@Autowired private RechercheStatutRepo rechercheStatutRepo;
 
 	private List<String> statutRecherche;
 
 	public List<String> getStatutRecherche() {
 		if(statutRecherche == null) {
 			this.statutRecherche = rechercheStatutRepo.findAll().stream().map(x -> x.getValue()).collect(Collectors.toList());
-//			RechercheRestController.statutRecherche = Stream.of(RechercheStatut.values())
-//					.map(Enum::name)
-//					.collect(Collectors.toList());		
 		}
 		return statutRecherche;
 	}
