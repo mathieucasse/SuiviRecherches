@@ -1,21 +1,9 @@
 package ch.matfly.suivirecherches.model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
-
+import lombok.*;
 import org.hibernate.envers.Audited;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import javax.persistence.*;
 
 @Audited
 @Entity
@@ -35,8 +23,11 @@ public class Personne {
 	@Getter @Setter  private String telephone;
 	@Getter @Setter  private String email;
 	
-	@OneToOne(mappedBy = "personne")
-    private Recherche recherche;
+	@OneToOne(mappedBy = "personneService")
+    private Recherche rechercheServ;
+
+	@OneToOne(mappedBy = "personneFinale")
+	private Recherche rechercheFin;
 
 	public Personne(String nom, String prenom, String telephone,String email) {
 		super();

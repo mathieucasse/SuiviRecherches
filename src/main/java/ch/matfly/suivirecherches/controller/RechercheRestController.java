@@ -1,33 +1,18 @@
 package ch.matfly.suivirecherches.controller;
 
+import ch.matfly.suivirecherches.model.dto.AngularRechercheDto;
+import ch.matfly.suivirecherches.service.RechercheService;
+import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.text.ParseException;
 import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
-import ch.matfly.suivirecherches.dao.AuditRepo;
-import ch.matfly.suivirecherches.dao.HistoriqueRepo;
-import ch.matfly.suivirecherches.model.Historique;
-import ch.matfly.suivirecherches.model.Recherche;
-import ch.matfly.suivirecherches.model.dto.AngularRechercheDto;
-import ch.matfly.suivirecherches.model.dto.EntrepriseAuditDto;
-import ch.matfly.suivirecherches.model.dto.PersonneAuditDto;
-import ch.matfly.suivirecherches.model.dto.RechercheAuditDto;
-import ch.matfly.suivirecherches.service.RechercheService;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author mathieucasse
@@ -40,16 +25,16 @@ import lombok.extern.slf4j.Slf4j;
 public class RechercheRestController {
 
 	@Autowired private RechercheService rechercheService;
-	@Autowired private AuditRepo auditRepo;
-
 
 	@GetMapping(value="recherches")
+	@ApiOperation(value = "Get All Recherches",	notes = "Return a list of AngularRechercheDTO", response = List.class)
 	public List<AngularRechercheDto> getRecherches() {
 		return rechercheService.getRecherches();
 	}
 
-	@PostMapping("updateRecherche")
+	@PutMapping("recherche")
 	@ResponseBody
+	@ApiOperation(value = "update a recherche",	notes = "update a recherche from an AngularRechercheDTO", response = AngularRechercheDto.class)
 	public ResponseEntity<AngularRechercheDto> updateRecherche(@RequestBody AngularRechercheDto aRecherche) throws URISyntaxException, ParseException {
 
 		log.debug(">>>>>>>>>  RestController==== updateRecherche Called !!! ");
@@ -59,14 +44,15 @@ public class RechercheRestController {
 					.path("/{id}")
 					.buildAndExpand(recherche.getId())
 					.toUri();
-			return ResponseEntity.created(uri).body(recherche);
+			return ResponseEntity.ok().body(recherche);
 		} else {
 			return ResponseEntity.notFound().build();
 		}
 	}
 
-	@PostMapping("addRecherche")
+	@PostMapping("recherche")
 	@ResponseBody
+	@ApiOperation(value = "add a recherche",	notes = "add a recherche from an AngularRechercheDTO", response = AngularRechercheDto.class)
 	public ResponseEntity<AngularRechercheDto> addRecherche(@RequestBody AngularRechercheDto aRecherche) throws URISyntaxException, ParseException {
 		log.debug("========== addRecherche  : " + aRecherche);
 		AngularRechercheDto recherche = rechercheService.addRecherche(aRecherche);
@@ -82,51 +68,35 @@ public class RechercheRestController {
 		}
 
 	}
-	
-	@DeleteMapping("delRecherche/{id}")
+
+	@PostMapping("recherche/event")
+	@ResponseBody
+	@ApiOperation(value = "add an event to a recherche",	notes = "add an event to recherche", response = AngularRechercheDto.class)
+	public ResponseEntity<AngularRechercheDto> addRechercheEvent(@RequestBody AngularRechercheDto aRecherche) throws URISyntaxException, ParseException {
+
+		log.debug(">>>>>>>>>  RestController==== updateRecherche Called !!! ");
+		AngularRechercheDto recherche = rechercheService.updateRecherche(aRecherche);
+		if(null!=recherche) {
+			URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
+					.path("/{id}")
+					.buildAndExpand(recherche.getId())
+					.toUri();
+			return ResponseEntity.created(uri).body(recherche);
+		} else {
+			return ResponseEntity.notFound().build();
+		}
+	}
+
+	@DeleteMapping("recherche/{id}")
+	@ApiOperation(value = "delete a recherche",	notes = "delete a recherche from an id", response = AngularRechercheDto.class)
 	public ResponseEntity<AngularRechercheDto> delRecherche(@PathVariable String id) {
 		log.debug("========== delRecherche  : " + id);
 		AngularRechercheDto recherche = rechercheService.delRecherche(id);
 		if(null!=recherche) {
 			log.debug( "==== delRecherche : " + recherche.toString());
-			return ResponseEntity.ok().body(recherche);
+			return ResponseEntity.accepted().body(recherche);
 		}else {
 			return ResponseEntity.notFound().build();
 		}
 	}
-	
-	@GetMapping("auditRecherche/{id}")
-	public ResponseEntity<List<RechercheAuditDto>> getRechercheAudit(@PathVariable String id) {
-		log.debug("========== auditRecherche  : " + id);
-		List<RechercheAuditDto> recherche = auditRepo.getRechercheAuditRevForId(Long.valueOf(id));
-		if(null!=recherche) {
-			log.debug("Recherche : " + recherche.toString());
-			return ResponseEntity.ok().body(recherche);
-		}else {
-			return ResponseEntity.notFound().build();
-		}
-	}
-	
-	@GetMapping("auditPersonne/{id}")
-	public ResponseEntity<List<PersonneAuditDto>> getPersonneAudit(@PathVariable String id) {
-		log.debug("========== auditPersonne  : " + id);
-		List<PersonneAuditDto> personne = auditRepo.getPersonneAuditRevForId(Long.valueOf(id));
-		if(null!=personne) {
-			log.debug("Personne : " + personne.toString());
-			return ResponseEntity.ok().body(personne);
-		}else {
-			return ResponseEntity.notFound().build();
-		}
-	}
-	@GetMapping("auditEntreprise/{id}")
-	public ResponseEntity<List<EntrepriseAuditDto>> getEntrepriseAudit(@PathVariable String id) {
-		log.debug("========== auditEntreprise  : " + id);
-		List<EntrepriseAuditDto> entreprise = auditRepo.getEntrepriseAuditRevForId(Long.valueOf(id));
-		if(null!=entreprise) {
-			log.debug("Entreprise : " + entreprise.toString());
-			return ResponseEntity.ok().body(entreprise);
-		}else {
-			return ResponseEntity.notFound().build();
-		}
-	}
-}	
+}

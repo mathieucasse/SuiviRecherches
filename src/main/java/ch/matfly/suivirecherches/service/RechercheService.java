@@ -1,18 +1,17 @@
 package ch.matfly.suivirecherches.service;
 
-import java.text.ParseException;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import ch.matfly.suivirecherches.dao.HistoriqueRepo;
 import ch.matfly.suivirecherches.dao.RechercheRepo;
 import ch.matfly.suivirecherches.model.Historique;
 import ch.matfly.suivirecherches.model.Recherche;
 import ch.matfly.suivirecherches.model.dto.AngularRechercheDto;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.text.ParseException;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -43,9 +42,10 @@ public class RechercheService {
 	
 	public AngularRechercheDto addRecherche(AngularRechercheDto aRecherche) throws ParseException {
 		log.debug(">>>>>>>>>  Service ==== addRecherche Called !!! ");
-		Recherche recherche = aRecherche.buildRecherche();
+		Recherche recherche = aRecherche.buildNewRecherche();
 		log.debug("========== addRecherche  : " + recherche);
 		recherche = rechercheRepo.save(recherche);
+		recherche.getEvenements().get(0).setRecherche(recherche);
 		if(null != recherche.getId()) {
 			log.debug("added Recherche : " + recherche.toString());
 			return new AngularRechercheDto(recherche);

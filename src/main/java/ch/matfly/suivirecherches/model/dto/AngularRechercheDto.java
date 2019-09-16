@@ -1,12 +1,14 @@
 package ch.matfly.suivirecherches.model.dto;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-
 import ch.matfly.suivirecherches.model.Entreprise;
+import ch.matfly.suivirecherches.model.Evenement;
 import ch.matfly.suivirecherches.model.Personne;
 import ch.matfly.suivirecherches.model.Recherche;
+import ch.matfly.suivirecherches.util.MatFormat;
 import lombok.Data;
+
+import java.text.ParseException;
+import java.util.Date;
 
 @Data
 public class AngularRechercheDto {
@@ -18,62 +20,92 @@ public class AngularRechercheDto {
 	private String assignationORP;
 	private Integer tauxActivite;
 	private String approcheMedia;
-	private String client;
-	private String entreprise;
-	private String contactNom;
-	private String contactPrenom;
-	private String contactEmail;
-	private String contactTelephone;
+	private String entrepriseS;
+	private String entrepriseTelS;
+	private String contactNomS;
+	private String contactPrenomS;
+	private String contactEmailS;
+	private String contactTelephoneS;
+	private String entrepriseF;
+	private String entrepriseTelF;
+	private String contactNomF;
+	private String contactPrenomF;
+	private String contactEmailF;
+	private String contactTelephoneF;
 	
 	public AngularRechercheDto(Recherche recherche) {
 		super();
 		this.id = recherche.getId();
-		this.dateContact = new SimpleDateFormat("yyyy-MM-dd").format(recherche.getContactDate());
+		this.dateContact = MatFormat.format(recherche.getContactDate());
 		this.poste = recherche.getPoste();
 		this.statut = recherche.getStatut();
 		this.assignationORP = recherche.getAssignationORP();
 		this.tauxActivite = (recherche.getTauxActivite() != null) ? Integer.valueOf(recherche.getTauxActivite()) : null;
 		this.approcheMedia = recherche.getApprocheMedia();
-		this.client = recherche.getClient();
-		this.entreprise = recherche.getEntreprise().getNom();
-		this.contactNom = recherche.getPersonne().getNom();
-		this.contactPrenom = recherche.getPersonne().getPrenom();
-		this.contactEmail = recherche.getPersonne().getEmail();
-		this.contactTelephone = recherche.getPersonne().getTelephone();
+		this.entrepriseS = recherche.getEntrepriseService().getNom();
+		this.entrepriseTelS = recherche.getEntrepriseService().getTelephone();
+		this.contactNomS = recherche.getPersonneService().getNom();
+		this.contactPrenomS = recherche.getPersonneService().getPrenom();
+		this.contactEmailS = recherche.getPersonneService().getEmail();
+		this.contactTelephoneS = recherche.getPersonneService().getTelephone();
+		this.entrepriseF = recherche.getEntrepriseFinale().getNom();
+		this.entrepriseTelF = recherche.getEntrepriseFinale().getTelephone();
+		this.contactNomF = recherche.getPersonneFinale().getNom();
+		this.contactPrenomF = recherche.getPersonneFinale().getPrenom();
+		this.contactEmailF = recherche.getPersonneFinale().getEmail();
+		this.contactTelephoneF = recherche.getPersonneFinale().getTelephone();
 	}
 	
-	public Recherche buildRecherche() throws ParseException{
-		Entreprise entreprise = new Entreprise(this.entreprise, null, null);
-		Personne personne = new Personne(contactNom, contactPrenom, contactTelephone, contactEmail);
-		return new Recherche(id, new SimpleDateFormat("yyyy-MM-dd").parse(dateContact),poste,client,statut, assignationORP,
-				tauxActivite.toString(), approcheMedia, entreprise, personne);
-		
+	public Recherche buildNewRecherche() throws ParseException{
+		Entreprise entrepriseService = new Entreprise(this.entrepriseS, this.entrepriseTelS, null);
+
+		Personne personneService = null;
+		if(null != contactNomS) {
+			personneService = new Personne(contactNomS, contactPrenomS, contactTelephoneS, contactEmailS);
+		}
+		Entreprise entrepriseFinale = null;
+		if(null != entrepriseF){
+			entrepriseFinale = new Entreprise(this.entrepriseF, this.entrepriseTelF, null);
+		}
+		Personne personneFinale = null;
+		if(null != contactNomF){
+			personneFinale = new Personne(contactNomF, contactPrenomF, contactTelephoneF, contactEmailF);
+		}
+		Date dc = MatFormat.parse(dateContact);
+
+		Recherche recherche = new Recherche(dc, poste, statut, assignationORP,
+				tauxActivite.toString(), approcheMedia,
+				entrepriseService, personneService,
+				entrepriseFinale, personneFinale);
+
+		Evenement evenement = new Evenement(dc, "CREATION", "Fist Action", recherche );
+		recherche.getEvenements().add(evenement);
+
+		return recherche;
 	}
 
 	public AngularRechercheDto(Long id, String dateContact, String poste, String statut, String assignationORP,
-			Integer tauxActivite, String approcheMedia, String client, String entreprise, String contactNom,
-			String contactPrenom, String contactEmail, String contactTelephone) {
+			Integer tauxActivite, String approcheMedia, String entrepriseS, String contactNomS,
+			String contactPrenomS, String contactEmailS, String contactTelephoneS, String entrepriseF, String contactNomF,
+			String contactPrenomF, String contactEmailF, String contactTelephoneF) {
 		super();
 		this.id = id;
-//		try {
-//			this.dateContact = sdf.parse(dateContact);
-//		} catch (ParseException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//			this.dateContact = new Date();
-//		}
 		this.dateContact = dateContact;
 		this.poste = poste;
 		this.statut = statut;
 		this.assignationORP = assignationORP;
 		this.tauxActivite = tauxActivite;
 		this.approcheMedia = approcheMedia;
-		this.client = client;
-		this.entreprise = entreprise;
-		this.contactNom = contactNom;
-		this.contactPrenom = contactPrenom;
-		this.contactEmail = contactEmail;
-		this.contactTelephone = contactTelephone;
+		this.entrepriseS = entrepriseS;
+		this.contactNomS = contactNomS;
+		this.contactPrenomS = contactPrenomS;
+		this.contactEmailS = contactEmailS;
+		this.contactTelephoneS = contactTelephoneS;
+		this.entrepriseF = entrepriseF;
+		this.contactNomF = contactNomF;
+		this.contactPrenomF = contactPrenomF;
+		this.contactEmailF = contactEmailF;
+		this.contactTelephoneF = contactTelephoneF;
 	}
 	
 }

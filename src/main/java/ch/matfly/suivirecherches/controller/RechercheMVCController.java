@@ -1,30 +1,22 @@
 package ch.matfly.suivirecherches.controller;
 
+import ch.matfly.suivirecherches.dao.HistoriqueRepo;
+import ch.matfly.suivirecherches.dao.RechercheRepo;
+import ch.matfly.suivirecherches.dao.RechercheStatutRepo;
+import ch.matfly.suivirecherches.model.Historique;
+import ch.matfly.suivirecherches.model.Recherche;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.RedirectView;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.view.RedirectView;
-
-import ch.matfly.suivirecherches.dao.HistoriqueRepo;
-import ch.matfly.suivirecherches.dao.RechercheRepo;
-import ch.matfly.suivirecherches.dao.RechercheStatutRepo;
-import ch.matfly.suivirecherches.model.Entreprise;
-import ch.matfly.suivirecherches.model.Historique;
-import ch.matfly.suivirecherches.model.Personne;
-import ch.matfly.suivirecherches.model.Recherche;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author mathieucasse
@@ -84,13 +76,13 @@ public class RechercheMVCController {
 			@RequestParam(name = "entreprise.nom") String entrepriseNom,
 			@RequestParam(name = "entreprise.tel") String entrepriseTel
 			) throws ParseException {
-		Entreprise e = new Entreprise(entrepriseNom, entrepriseTel, null);
-		
-		Personne p = new Personne(personneNom, personnePrenom, personneTel, personneEmail);
-		Recherche recherche = new Recherche(sdf.parse(creationDate),poste,client, statut,e,p);
-		recherche=rechercheRepo.save(recherche);
-		log.info("addRecherche : " + recherche.toString());
-		historiqueRepo.save(new Historique(recherche.getId(), " --- CREATE --- "));
+//		Entreprise e = new Entreprise(entrepriseNom, entrepriseTel, null);
+//		
+//		Personne p = new Personne(personneNom, personnePrenom, personneTel, personneEmail);
+//		Recherche recherche = new Recherche(sdf.parse(creationDate),poste,client, statut,e,p);
+//		recherche=rechercheRepo.save(recherche);
+//		log.info("addRecherche : " + recherche.toString());
+//		historiqueRepo.save(new Historique(recherche.getId(), " --- CREATE --- "));
 		return new RedirectView("home");
 	}
 
@@ -162,38 +154,38 @@ public class RechercheMVCController {
 				if((tmpRp = lookForAndAudit(rp, parameters, recherche.getPoste(), sb))!= null) {
 					recherche.setPoste(tmpRp);
 				}
-				rp = "recherche.client";
-				if((tmpRp = lookForAndAudit(rp, parameters, recherche.getClient(), sb))!= null) {
-					recherche.setClient(tmpRp);
-				}
+//				rp = "recherche.client";
+//				if((tmpRp = lookForAndAudit(rp, parameters, recherche.getClient(), sb))!= null) {
+//					recherche.setClient(tmpRp);
+//				}
 				rp = "recherche.statut";
 				if((tmpRp = lookForAndAudit(rp, parameters, recherche.getStatut(), sb))!= null) {
 					recherche.setStatut(tmpRp);
 				}
 				rp = "personne.nom";
-				if((tmpRp = lookForAndAudit(rp, parameters, recherche.getPersonne().getNom(), sb))!= null) {
-					recherche.getPersonne().setNom(tmpRp);
+				if((tmpRp = lookForAndAudit(rp, parameters, recherche.getPersonneService().getNom(), sb))!= null) {
+					recherche.getPersonneService().setNom(tmpRp);
 				}
-				rp = "personne.prenom";
-				if((tmpRp = lookForAndAudit(rp, parameters, recherche.getPersonne().getPrenom(),sb))!= null) {
-					recherche.getPersonne().setPrenom(tmpRp);
-				}
-				rp = "personne.tel";
-				if((tmpRp = lookForAndAudit(rp, parameters, recherche.getPersonne().getTelephone(),sb))!= null) {
-					recherche.getPersonne().setTelephone(tmpRp);
-				}
-				rp = "personne.email";
-				if((tmpRp = lookForAndAudit(rp, parameters, recherche.getPersonne().getEmail(),sb))!= null) {
-					recherche.getPersonne().setEmail(tmpRp);
-				}
-				rp = "entreprise.nom";
-				if((tmpRp = lookForAndAudit(rp, parameters, recherche.getEntreprise().getNom(),sb))!= null) {
-					recherche.getEntreprise().setNom(tmpRp);
-				}
-				rp = "entreprise.tel";
-				if((tmpRp = lookForAndAudit(rp, parameters, recherche.getEntreprise().getTelephone(),sb))!= null) {
-					recherche.getEntreprise().setTelephone(tmpRp);
-				}
+//				rp = "personne.prenom";
+//				if((tmpRp = lookForAndAudit(rp, parameters, recherche.getPersonne().getPrenom(),sb))!= null) {
+//					recherche.getPersonne().setPrenom(tmpRp);
+//				}
+//				rp = "personne.tel";
+//				if((tmpRp = lookForAndAudit(rp, parameters, recherche.getPersonne().getTelephone(),sb))!= null) {
+//					recherche.getPersonne().setTelephone(tmpRp);
+//				}
+//				rp = "personne.email";
+//				if((tmpRp = lookForAndAudit(rp, parameters, recherche.getPersonne().getEmail(),sb))!= null) {
+//					recherche.getPersonne().setEmail(tmpRp);
+//				}
+//				rp = "entreprise.nom";
+//				if((tmpRp = lookForAndAudit(rp, parameters, recherche.getEntreprise().getNom(),sb))!= null) {
+//					recherche.getEntreprise().setNom(tmpRp);
+//				}
+//				rp = "entreprise.tel";
+//				if((tmpRp = lookForAndAudit(rp, parameters, recherche.getEntreprise().getTelephone(),sb))!= null) {
+//					recherche.getEntreprise().setTelephone(tmpRp);
+//				}
 
 				if(sb.length()>0) {
 					rechercheRepo.save(recherche);

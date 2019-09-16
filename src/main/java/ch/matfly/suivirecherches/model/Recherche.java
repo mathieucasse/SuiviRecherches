@@ -1,31 +1,16 @@
 package ch.matfly.suivirecherches.model;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
-import javax.persistence.Basic;
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
-import javax.persistence.Transient;
-
+import ch.matfly.suivirecherches.model.dto.AngularRechercheDto;
+import lombok.*;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.envers.Audited;
 
-import ch.matfly.suivirecherches.model.dto.AngularRechercheDto;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
-import lombok.extern.slf4j.Slf4j;
+import javax.persistence.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 @Audited
 @Data
@@ -33,8 +18,8 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(of= {"id","contactDate", "poste","client","statut","assignationORP","tauxActivite","approcheMedia","entreprise","personne"})
-@ToString(of= {"id","contactDate", "poste","client","statut","assignationORP","tauxActivite","approcheMedia","entreprise","personne"})
+@EqualsAndHashCode(of= {"id","contactDate", "poste","statut","assignationORP","tauxActivite","approcheMedia","entrepriseService","personneService","entrepriseFinale","personneFinale"})
+@ToString(of= {"id","contactDate", "poste","statut","assignationORP","tauxActivite","approcheMedia","entrepriseService","personneService","entrepriseFinale","personneFinale"})
 public class Recherche {
 	
 	@Transient
@@ -44,29 +29,44 @@ public class Recherche {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Basic private Date contactDate;
+	@Getter @Basic private Date contactDate;
 	@Getter @Setter private String poste;
-	@Getter @Setter private String client;
 	@Getter @Setter private String statut;
 	@Getter @Setter private String assignationORP;
 	@Getter @Setter private String tauxActivite;
 	@Getter @Setter private String approcheMedia;
 
-	@OneToOne(cascade = CascadeType.ALL) @JoinColumn( name = "entreprise_id" )
-	@Setter private Entreprise entreprise;
+	@OneToOne(cascade = CascadeType.ALL)
+	@JoinColumn( name = "entrepriseService_id" )
+	@Setter private Entreprise entrepriseService;
+	
+	@OneToOne(cascade = CascadeType.ALL)
+	@JoinColumn( name = "personneService_id" )
+	@Setter private Personne personneService;
 
-	@OneToOne(cascade = CascadeType.ALL) @JoinColumn( name = "personne_id" )
-	@Setter private Personne personne;
+	@OneToOne(cascade = CascadeType.ALL)
+	@JoinColumn( name = "entrepriseFinale_id" )
+	@Setter private Entreprise entrepriseFinale;
+	
+	@OneToOne(cascade = CascadeType.ALL)
+	@JoinColumn( name = "personneFinale_id" )
+	@Setter private Personne personneFinale;
+	
+	@OneToMany(mappedBy = "recherche", cascade = CascadeType.ALL, orphanRemoval = true)
+	@Setter private List<Evenement> evenements = new ArrayList<>();
 
-
-	public Recherche(Date contactDate, String poste, String client, String statut, Entreprise entreprise, Personne personne) {
+	public Recherche(Date contactDate, String poste, String statut, String assignationORP, String tauxActivite, String approcheMedia, Entreprise entrepriseService, Personne personneService, Entreprise entrepriseFinale, Personne personneFinale) {
 		super();
 		this.contactDate = contactDate;
-		this.client = client;
 		this.poste = poste;
 		this.statut = statut;
-		this.entreprise = entreprise;
-		this.personne = personne;
+		this.assignationORP = assignationORP;
+		this.tauxActivite = tauxActivite;
+		this.approcheMedia = approcheMedia;
+		this.entrepriseService = entrepriseService;
+		this.personneService = personneService;
+		this.entrepriseFinale = entrepriseFinale;
+		this.personneFinale = personneFinale;
 	}
 
 	public Recherche( String poste, String statut) {
@@ -84,16 +84,25 @@ public class Recherche {
 			this.contactDate = new Date();
 		}
 		this.poste = aRecherche.getPoste();
-		this.client = aRecherche.getClient();
 		this.statut = aRecherche.getStatut();
 		this.assignationORP = aRecherche.getAssignationORP();
 		this.tauxActivite = aRecherche.getTauxActivite().toString();
 		this.approcheMedia = aRecherche.getApprocheMedia();
-		this.entreprise.setNom(aRecherche.getEntreprise());
-		this.personne.setNom(aRecherche.getContactNom());
-		this.personne.setPrenom(aRecherche.getContactPrenom());
-		this.personne.setTelephone(aRecherche.getContactTelephone());
-		this.personne.setEmail(aRecherche.getContactEmail());
+		this.entrepriseService.setNom(aRecherche.getEntrepriseS());
+		this.entrepriseService.setTelephone(aRecherche.getEntrepriseTelS());
+		this.personneService.setNom(aRecherche.getContactNomS());
+		this.personneService.setPrenom(aRecherche.getContactPrenomS());
+		this.personneService.setTelephone(aRecherche.getContactTelephoneS());
+		this.personneService.setEmail(aRecherche.getContactEmailS());
+		this.entrepriseFinale.setNom(aRecherche.getEntrepriseF());
+		this.entrepriseFinale.setTelephone(aRecherche.getEntrepriseTelF());
+		this.personneFinale.setNom(aRecherche.getContactNomF());
+		this.personneFinale.setPrenom(aRecherche.getContactPrenomF());
+		this.personneFinale.setTelephone(aRecherche.getContactTelephoneF());
+		this.personneFinale.setEmail(aRecherche.getContactEmailF());
 	}
 
+	public void addEvenement(Evenement evenement){
+		this.evenements.add(evenement);
+	}
 }

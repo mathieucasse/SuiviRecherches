@@ -1,16 +1,18 @@
 package ch.matfly.suivirecherches.util;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.sql.Timestamp;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
-import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class MatFormat {
 	
 	private final static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 	private final static String standard = "2000-01-01";
+	private final static Date standardd = new Date();
 
 	public static String format(Long l) {
 		if(null == l) return standard;
@@ -33,5 +35,17 @@ public class MatFormat {
 		if(null == s) return standard;
 		log.debug("======= Date d = " + s );
 		return sdf.format(s.substring(0, 11));
+	}
+
+	public static Date parse(String s) {
+		if(null == s) return standardd;
+		log.debug("======= Date d = " + s );
+		try {
+			return sdf.parse(s.substring(0, 11));
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}finally{
+			return standardd;
+		}
 	}
 }
