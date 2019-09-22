@@ -1,6 +1,7 @@
 package ch.matfly.suivirecherches.model;
 
 import ch.matfly.suivirecherches.model.dto.AngularRechercheDto;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.envers.Audited;
@@ -53,6 +54,7 @@ public class Recherche {
 	@Setter private Personne personneFinale;
 	
 	@OneToMany(mappedBy = "recherche", cascade = CascadeType.ALL, orphanRemoval = true)
+	@JsonIgnore
 	@Setter private List<Evenement> evenements = new ArrayList<>();
 
 	public Recherche(Date contactDate, String poste, String statut, String assignationORP, String tauxActivite, String approcheMedia, Entreprise entrepriseService, Personne personneService, Entreprise entrepriseFinale, Personne personneFinale) {
@@ -74,6 +76,11 @@ public class Recherche {
 		this.contactDate = new Date();
 		this.poste = poste;
 		this.statut = statut;
+	}
+
+	public Recherche( Long id) {
+		super();
+		this.id = id;
 	}
 
 	public void updateWith(AngularRechercheDto aRecherche) {

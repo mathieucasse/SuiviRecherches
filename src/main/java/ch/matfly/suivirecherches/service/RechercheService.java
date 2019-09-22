@@ -2,6 +2,7 @@ package ch.matfly.suivirecherches.service;
 
 import ch.matfly.suivirecherches.dao.HistoriqueRepo;
 import ch.matfly.suivirecherches.dao.RechercheRepo;
+import ch.matfly.suivirecherches.model.Evenement;
 import ch.matfly.suivirecherches.model.Historique;
 import ch.matfly.suivirecherches.model.Recherche;
 import ch.matfly.suivirecherches.model.dto.AngularRechercheDto;
@@ -9,8 +10,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.NoResultException;
 import java.text.ParseException;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -24,7 +27,13 @@ public class RechercheService {
 	public List<AngularRechercheDto> getRecherches() {
 		return rechercheRepo.findAll().stream().map(AngularRechercheDto::new).collect(Collectors.toList());
 	}
-	
+
+	public Recherche getRechercheById(Evenement evenement) {
+		Optional<Recherche> recherche = rechercheRepo.findById(evenement.getRechercheId());
+		if(recherche.isPresent()){
+			return recherche.get();
+		}else throw new NoResultException("Recherche with id = " + evenement.getRechercheId() + " not found");
+	}
 	
 	public AngularRechercheDto updateRecherche(AngularRechercheDto aRecherche) {
 		log.debug(">>>>>>>>>  RestController==== updateRecherche Called !!! ");

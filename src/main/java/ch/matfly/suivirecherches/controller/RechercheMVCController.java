@@ -5,6 +5,7 @@ import ch.matfly.suivirecherches.dao.RechercheRepo;
 import ch.matfly.suivirecherches.dao.RechercheStatutRepo;
 import ch.matfly.suivirecherches.model.Historique;
 import ch.matfly.suivirecherches.model.Recherche;
+import ch.matfly.suivirecherches.model.RechercheStatut;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -41,7 +42,7 @@ public class RechercheMVCController {
 
 	public List<String> getStatutRecherche() {
 		if(statutRecherche == null) {
-			this.statutRecherche = rechercheStatutRepo.findAll().stream().map(x -> x.getValue()).collect(Collectors.toList());
+			this.statutRecherche = rechercheStatutRepo.findAll().stream().map(RechercheStatut::getValue).collect(Collectors.toList());
 		}
 		return statutRecherche;
 	}
@@ -75,7 +76,7 @@ public class RechercheMVCController {
 			@RequestParam(name = "personne.email") String personneEmail,
 			@RequestParam(name = "entreprise.nom") String entrepriseNom,
 			@RequestParam(name = "entreprise.tel") String entrepriseTel
-			) throws ParseException {
+			) {
 //		Entreprise e = new Entreprise(entrepriseNom, entrepriseTel, null);
 //		
 //		Personne p = new Personne(personneNom, personnePrenom, personneTel, personneEmail);
@@ -221,7 +222,6 @@ public class RechercheMVCController {
 	 * @return val to set or null if not modified
 	 */
 	
-	// TODO  fix null values in valObj
 	static String lookForAndAudit(String rp, Map<String, String> map, String valObj, StringBuilder sb ) {
 		log.debug("=========== lookForAndAudit : rp = " + rp +" ,  map = " + map + " , valObj = " + valObj + " , sb = " + sb);
 		String tmpRp = lookFor(rp, map);

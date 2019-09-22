@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.text.ParseException;
 import java.util.List;
 
@@ -35,7 +34,7 @@ public class RechercheRestController {
 	@PutMapping("recherche")
 	@ResponseBody
 	@ApiOperation(value = "update a recherche",	notes = "update a recherche from an AngularRechercheDTO", response = AngularRechercheDto.class)
-	public ResponseEntity<AngularRechercheDto> updateRecherche(@RequestBody AngularRechercheDto aRecherche) throws URISyntaxException, ParseException {
+	public ResponseEntity<AngularRechercheDto> updateRecherche(@RequestBody AngularRechercheDto aRecherche) {
 
 		log.debug(">>>>>>>>>  RestController==== updateRecherche Called !!! ");
 		AngularRechercheDto recherche = rechercheService.updateRecherche(aRecherche);
@@ -53,7 +52,7 @@ public class RechercheRestController {
 	@PostMapping("recherche")
 	@ResponseBody
 	@ApiOperation(value = "add a recherche",	notes = "add a recherche from an AngularRechercheDTO", response = AngularRechercheDto.class)
-	public ResponseEntity<AngularRechercheDto> addRecherche(@RequestBody AngularRechercheDto aRecherche) throws URISyntaxException, ParseException {
+	public ResponseEntity<AngularRechercheDto> addRecherche(@RequestBody AngularRechercheDto aRecherche) throws ParseException {
 		log.debug("========== addRecherche  : " + aRecherche);
 		AngularRechercheDto recherche = rechercheService.addRecherche(aRecherche);
 		if(null != recherche.getId()) {
@@ -67,24 +66,6 @@ public class RechercheRestController {
 			return ResponseEntity.notFound().build();
 		}
 
-	}
-
-	@PostMapping("recherche/event")
-	@ResponseBody
-	@ApiOperation(value = "add an event to a recherche",	notes = "add an event to recherche", response = AngularRechercheDto.class)
-	public ResponseEntity<AngularRechercheDto> addRechercheEvent(@RequestBody AngularRechercheDto aRecherche) throws URISyntaxException, ParseException {
-
-		log.debug(">>>>>>>>>  RestController==== updateRecherche Called !!! ");
-		AngularRechercheDto recherche = rechercheService.updateRecherche(aRecherche);
-		if(null!=recherche) {
-			URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
-					.path("/{id}")
-					.buildAndExpand(recherche.getId())
-					.toUri();
-			return ResponseEntity.created(uri).body(recherche);
-		} else {
-			return ResponseEntity.notFound().build();
-		}
 	}
 
 	@DeleteMapping("recherche/{id}")
