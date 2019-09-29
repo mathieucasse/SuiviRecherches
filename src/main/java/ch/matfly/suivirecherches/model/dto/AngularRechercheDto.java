@@ -7,7 +7,6 @@ import ch.matfly.suivirecherches.model.Recherche;
 import ch.matfly.suivirecherches.util.MatFormat;
 import lombok.Data;
 
-import java.text.ParseException;
 import java.util.Date;
 
 @Data
@@ -32,7 +31,16 @@ public class AngularRechercheDto {
 	private String contactPrenomF;
 	private String contactEmailF;
 	private String contactTelephoneF;
-	
+
+	public AngularRechercheDto(){
+		super();
+	}
+
+	public AngularRechercheDto(String poste, String statut){
+		super();
+		this.poste = poste;
+		this.statut = statut;
+	}
 	public AngularRechercheDto(Recherche recherche) {
 		super();
 		this.id = recherche.getId();
@@ -56,7 +64,7 @@ public class AngularRechercheDto {
 		this.contactTelephoneF = recherche.getPersonneFinale().getTelephone();
 	}
 	
-	public Recherche buildNewRecherche() throws ParseException{
+	public Recherche buildNewRecherche(){
 		Entreprise entrepriseService = new Entreprise(this.entrepriseS, this.entrepriseTelS, null);
 
 		Personne personneService = null;

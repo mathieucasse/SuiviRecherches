@@ -2,9 +2,11 @@ package ch.matfly.suivirecherches.service;
 
 import ch.matfly.suivirecherches.dao.HistoriqueRepo;
 import ch.matfly.suivirecherches.dao.RechercheRepo;
+import ch.matfly.suivirecherches.dao.UserRepo;
 import ch.matfly.suivirecherches.model.Evenement;
 import ch.matfly.suivirecherches.model.Historique;
 import ch.matfly.suivirecherches.model.Recherche;
+import ch.matfly.suivirecherches.model.User;
 import ch.matfly.suivirecherches.model.dto.AngularRechercheDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,13 +24,18 @@ public class RechercheService {
 
 	@Autowired private RechercheRepo rechercheRepo;
 	@Autowired private HistoriqueRepo historiqueRepo;
+	@Autowired private UserRepo userRepo;
 	
 	
 	public List<AngularRechercheDto> getRecherches() {
 		return rechercheRepo.findAll().stream().map(AngularRechercheDto::new).collect(Collectors.toList());
 	}
+	public List<AngularRechercheDto> getRecherchesByUserId(String id) {
+		User user = userRepo.getOne(id);
+		return rechercheRepo.findAllByOwner(user).stream().map(AngularRechercheDto::new).collect(Collectors.toList());
+	}
 
-	public Recherche getRechercheById(Evenement evenement) {
+	public Recherche getRechercheByEvenement(Evenement evenement) {
 		Optional<Recherche> recherche = rechercheRepo.findById(evenement.getRechercheId());
 		if(recherche.isPresent()){
 			return recherche.get();

@@ -57,6 +57,11 @@ public class Recherche {
 	@JsonIgnore
 	@Setter private List<Evenement> evenements = new ArrayList<>();
 
+	@ManyToOne(fetch=FetchType.LAZY)
+	@JoinColumn(name="OWNER_ID")
+	@JsonIgnore
+	private User owner;
+
 	public Recherche(Date contactDate, String poste, String statut, String assignationORP, String tauxActivite, String approcheMedia, Entreprise entrepriseService, Personne personneService, Entreprise entrepriseFinale, Personne personneFinale) {
 		super();
 		this.contactDate = contactDate;

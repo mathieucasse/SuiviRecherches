@@ -29,6 +29,10 @@ public class Personne {
 	@OneToOne(mappedBy = "personneFinale")
 	private Recherche rechercheFin;
 
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "user_id")
+	private User post;
+
 	public Personne(String nom, String prenom, String telephone,String email) {
 		super();
 		this.nom = nom;

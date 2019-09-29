@@ -37,7 +37,7 @@ public class RechercheMVCControllerTest {
 	
 	@Test
     public void shouldReturnDefaultHome() throws Exception {
-        this.mockMvc.perform(get("recherches/"))
+        this.mockMvc.perform(get("/"))
         		.andDo(print())
         		.andExpect(status().isOk())
         		.andExpect(view().name("home.jsp"))

@@ -10,10 +10,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-
+@CrossOrigin(origins = {
+		"http://ec2-3-19-239-63.us-east-2.compute.amazonaws.com",
+		"http://ec2-3-19-239-63.us-east-2.compute.amazonaws.com:4200",
+		"http://localhost",
+		"http://localhost:4200",
+		"http://localhost:4202"}, maxAge = 3600)
 @RestController
 @RequestMapping("rest")
-@CrossOrigin(origins = {"http://localhost:4200", "http://localhost:4202"}, maxAge = 3600)
 public class UtilRestController {
 	
 	@Autowired ServiceStaticLists  serviceStaticLists;

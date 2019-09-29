@@ -25,7 +25,7 @@ public class EvenementService {
 
     public Evenement saveEvenement(Evenement evenement) {
         log.debug(">>>>>>>>>  Service ==== saveEvenement  : " + evenement);
-        evenement.setRecherche(rechercheService.getRechercheById(evenement));
+        evenement.setRecherche(rechercheService.getRechercheByEvenement(evenement));
         evenement = evenementRepo.save(evenement);
         if(null != evenement.getId()) {
             log.debug("added Evenement : " + evenement.toString());

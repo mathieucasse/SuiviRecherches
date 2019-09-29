@@ -17,7 +17,12 @@ import java.util.List;
  * @author mathieucasse
  *
  */
-@CrossOrigin(origins = {"http://localhost:4200", "http://localhost:4202"}, maxAge = 3600)
+@CrossOrigin(origins = {
+		"http://ec2-3-19-239-63.us-east-2.compute.amazonaws.com",
+		"http://ec2-3-19-239-63.us-east-2.compute.amazonaws.com:4200",
+		"http://localhost",
+		"http://localhost:4200",
+		"http://localhost:4202"}, maxAge = 3600)
 @RestController
 @Slf4j
 @RequestMapping("rest")
@@ -29,6 +34,12 @@ public class RechercheRestController {
 	@ApiOperation(value = "Get All Recherches",	notes = "Return a list of AngularRechercheDTO", response = List.class)
 	public List<AngularRechercheDto> getRecherches() {
 		return rechercheService.getRecherches();
+	}
+
+	@GetMapping(value="recherches/{id}")
+	@ApiOperation(value = "Get All Recherches By User Id",	notes = "Return for a User the list of AngularRechercheDTO ", response = List.class)
+	public List<AngularRechercheDto> getRecherchesByUserId(@PathVariable String id) {
+		return rechercheService.getRecherchesByUserId(id);
 	}
 
 	@PutMapping("recherche")
@@ -43,7 +54,7 @@ public class RechercheRestController {
 					.path("/{id}")
 					.buildAndExpand(recherche.getId())
 					.toUri();
-			return ResponseEntity.ok().body(recherche);
+			return ResponseEntity.created(uri).body(recherche);
 		} else {
 			return ResponseEntity.notFound().build();
 		}
@@ -63,7 +74,7 @@ public class RechercheRestController {
 					.toUri();
 			return ResponseEntity.created(uri).body(recherche);
 		}else {
-			return ResponseEntity.notFound().build();
+			return ResponseEntity.unprocessableEntity().build();
 		}
 
 	}
