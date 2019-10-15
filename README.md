@@ -3,13 +3,11 @@
 ## DB
 http://localhost:8080/h2-console
 
-
 ## Swagger API
 http://localhost:8080/SuiviRecherches/v2/api-docs
 http://localhost:8080/SuiviRecherches/swagger-ui.html#/
 
 ## Dockerisation
-
 1 Build local
 docker build -t matkasdocker/sb-suivi-recherches-aws .
 1.1 Run local
@@ -36,3 +34,15 @@ sudo yum install docker -y
 sudo service docker start
 5 Run container
 docker run --rm -d -p 8080:8080 matkasdocker/sb-suivi-recherches-aws:latest
+
+##Default Users
+INSERT INTO app_role (id, role_name, description) VALUES (1, 'STANDARD_USER', 'Standard User - Has no admin rights');
+INSERT INTO app_role (id, role_name, description) VALUES (2, 'ADMIN_USER', 'Admin User - Has permission to perform admin tasks');
+
+-- USER
+INSERT INTO user (id, email, password) VALUES (1, 'lambda@test', '$2a$10$804o5kw5hkf66CUn5o0IT.0dPpojja0zm9gElWb5p72nfPQafLk16');
+INSERT INTO user (id, email, password) VALUES (2, 'admin@test', '$2a$10$Ajs6i6CJddRfCIi3q3iu4.sFnWaxiAxJEhc3df.2V/IzEoF1xRJge');
+
+INSERT INTO user_role(user_id, role_id) VALUES(1,1);
+INSERT INTO user_role(user_id, role_id) VALUES(2,1);
+INSERT INTO user_role(user_id, role_id) VALUES(2,2);

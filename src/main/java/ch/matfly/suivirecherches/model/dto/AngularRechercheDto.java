@@ -50,18 +50,26 @@ public class AngularRechercheDto {
 		this.assignationORP = recherche.getAssignationORP();
 		this.tauxActivite = (recherche.getTauxActivite() != null) ? Integer.valueOf(recherche.getTauxActivite()) : null;
 		this.approcheMedia = recherche.getApprocheMedia();
-		this.entrepriseS = recherche.getEntrepriseService().getNom();
-		this.entrepriseTelS = recherche.getEntrepriseService().getTelephone();
-		this.contactNomS = recherche.getPersonneService().getNom();
-		this.contactPrenomS = recherche.getPersonneService().getPrenom();
-		this.contactEmailS = recherche.getPersonneService().getEmail();
-		this.contactTelephoneS = recherche.getPersonneService().getTelephone();
-		this.entrepriseF = recherche.getEntrepriseFinale().getNom();
-		this.entrepriseTelF = recherche.getEntrepriseFinale().getTelephone();
-		this.contactNomF = recherche.getPersonneFinale().getNom();
-		this.contactPrenomF = recherche.getPersonneFinale().getPrenom();
-		this.contactEmailF = recherche.getPersonneFinale().getEmail();
-		this.contactTelephoneF = recherche.getPersonneFinale().getTelephone();
+		if(null != recherche.getEntrepriseService()) {
+			this.entrepriseS = recherche.getEntrepriseService().getNom();
+			this.entrepriseTelS = recherche.getEntrepriseService().getTelephone();
+		}
+		if(null != recherche.getPersonneService()) {
+			this.contactNomS = recherche.getPersonneService().getNom();
+			this.contactPrenomS = recherche.getPersonneService().getPrenom();
+			this.contactEmailS = recherche.getPersonneService().getEmail();
+			this.contactTelephoneS = recherche.getPersonneService().getTelephone();
+		}
+		if(null != recherche.getEntrepriseFinale()) {
+			this.entrepriseF = recherche.getEntrepriseFinale().getNom();
+			this.entrepriseTelF = recherche.getEntrepriseFinale().getTelephone();
+		}
+		if(null != recherche.getPersonneFinale()) {
+			this.contactNomF = recherche.getPersonneFinale().getNom();
+			this.contactPrenomF = recherche.getPersonneFinale().getPrenom();
+			this.contactEmailF = recherche.getPersonneFinale().getEmail();
+			this.contactTelephoneF = recherche.getPersonneFinale().getTelephone();
+		}
 	}
 	
 	public Recherche buildNewRecherche(){

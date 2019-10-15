@@ -2,7 +2,6 @@ package ch.matfly.suivirecherches.service;
 
 import ch.matfly.suivirecherches.dao.HistoriqueRepo;
 import ch.matfly.suivirecherches.dao.RechercheRepo;
-import ch.matfly.suivirecherches.dao.UserRepo;
 import ch.matfly.suivirecherches.model.Evenement;
 import ch.matfly.suivirecherches.model.Historique;
 import ch.matfly.suivirecherches.model.Recherche;
@@ -13,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.NoResultException;
-import java.text.ParseException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -24,14 +22,12 @@ public class RechercheService {
 
 	@Autowired private RechercheRepo rechercheRepo;
 	@Autowired private HistoriqueRepo historiqueRepo;
-	@Autowired private UserRepo userRepo;
-	
-	
+	@Autowired private UserService userService;
+
 	public List<AngularRechercheDto> getRecherches() {
 		return rechercheRepo.findAll().stream().map(AngularRechercheDto::new).collect(Collectors.toList());
 	}
-	public List<AngularRechercheDto> getRecherchesByUserId(String id) {
-		User user = userRepo.getOne(id);
+	public List<AngularRechercheDto> getRecherchesByUser(User user) {
 		return rechercheRepo.findAllByOwner(user).stream().map(AngularRechercheDto::new).collect(Collectors.toList());
 	}
 
@@ -40,6 +36,16 @@ public class RechercheService {
 		if(recherche.isPresent()){
 			return recherche.get();
 		}else throw new NoResultException("Recherche with id = " + evenement.getRechercheId() + " not found");
+	}
+
+	public Recherche getRechercheByIdAndUser(String id) {
+		Optional<Recherche> optionalRecherche = rechercheRepo.findById(Long.valueOf(id));
+		if(optionalRecherche.isPresent()){
+			Recherche recherche = optionalRecherche.get();
+			if(userService.getUser().getId().equals(recherche.getOwner().getId())) {
+				return recherche;
+			}else throw new NoResultException("Recherche with user : " + userService.getUser() + " not found");
+		}else throw new NoResultException("Recherche with id = " + id + " not found");
 	}
 	
 	public AngularRechercheDto updateRecherche(AngularRechercheDto aRecherche) {
@@ -56,9 +62,13 @@ public class RechercheService {
 		}
 	}
 	
-	public AngularRechercheDto addRecherche(AngularRechercheDto aRecherche) throws ParseException {
+	public AngularRechercheDto addRecherche(AngularRechercheDto aRecherche) {
 		log.debug(">>>>>>>>>  Service ==== addRecherche Called !!! ");
 		Recherche recherche = aRecherche.buildNewRecherche();
+		User user = userService.getUser();
+		if(null != user) {
+			recherche.setOwner(user);
+		}
 		log.debug("========== addRecherche  : " + recherche);
 		recherche = rechercheRepo.save(recherche);
 		recherche.getEvenements().get(0).setRecherche(recherche);
@@ -73,7 +83,7 @@ public class RechercheService {
 	public AngularRechercheDto delRecherche(String id) {
 		log.debug("========== Service delRecherche  : " + id);
 		Recherche recherche = rechercheRepo.findById(Long.valueOf(id)).orElse(null);
-		if(null!=recherche) {
+		if(null != recherche) {
 			log.debug( "==== delRecherche : " + recherche.toString());
 			rechercheRepo.delete(recherche);
 			Historique h = new Historique(recherche.getId(), " --- DELETE --- ");

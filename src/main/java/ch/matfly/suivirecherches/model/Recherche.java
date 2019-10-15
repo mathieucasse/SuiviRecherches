@@ -83,6 +83,14 @@ public class Recherche {
 		this.statut = statut;
 	}
 
+	public Recherche( String poste, String statut, User user) {
+		super();
+		this.contactDate = new Date();
+		this.poste = poste;
+		this.statut = statut;
+		this.owner = user;
+	}
+
 	public Recherche( Long id) {
 		super();
 		this.id = id;

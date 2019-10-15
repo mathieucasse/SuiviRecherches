@@ -1,6 +1,8 @@
 package ch.matfly.suivirecherches.controller;
 
+import ch.matfly.suivirecherches.dao.UserRepo;
 import ch.matfly.suivirecherches.model.Recherche;
+import ch.matfly.suivirecherches.model.User;
 import ch.matfly.suivirecherches.model.dto.AngularRechercheDto;
 import ch.matfly.suivirecherches.service.RechercheService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -39,24 +41,43 @@ public class RechercheRestControllerTest {
 	@MockBean
 	private RechercheService rechercheServiceMock;
 
+	@MockBean
+	private UserRepo userRepoMock;
+
+//    @Autowired
+//    private WebApplicationContext context;
+
+//    @Before
+//    public void setup() {
+//        mockMvc = MockMvcBuilders
+//                .webAppContextSetup(context)
+//                .apply(springSecurity())
+//                .build();
+//    }
+
 	public Recherche rechercheForDTO = rechercheBuilder();
 	public AngularRechercheDto recherche = angularRecherceBuilder();
 
 	static private List<Recherche> recherchesForDTO;
 	static private List<AngularRechercheDto> recherches;
+	static private User user = new User("1","aaa@ppp.ch", "aaa",null,null);
+
 	static {
 		recherchesForDTO = new ArrayList<>();
-		recherchesForDTO.add(new Recherche("AAA", "A"));
-		recherchesForDTO.add(new Recherche("AAB", "A"));
-		recherchesForDTO.add(new Recherche("ABB", "A"));
-		recherchesForDTO.add(new Recherche("BBB", "B"));
-		recherchesForDTO.add(new Recherche("BBA", "B"));
-		recherchesForDTO.add(new Recherche("CCC", "C"));
+		recherchesForDTO.add(new Recherche("AAA", "A", user));
+		recherchesForDTO.add(new Recherche("AAB", "A", user));
+		recherchesForDTO.add(new Recherche("ABB", "A", user));
+		recherchesForDTO.add(new Recherche("BBB", "B", user));
+		recherchesForDTO.add(new Recherche("BBA", "B", user));
+		recherchesForDTO.add(new Recherche("CCC", "C", user));
 		recherches = recherchesForDTO.stream()
 				.map(r -> new AngularRechercheDto(r.getPoste(),r.getStatut())).collect(Collectors.toList());
 	}
 
+
+
 	@Test
+//	@WithMockUser(value = "testjwtclientid")
 	public void shouldGetAllRecheches() throws Exception {
 
 		log.info("recherches = " + recherches );
@@ -70,21 +91,24 @@ public class RechercheRestControllerTest {
 	}
 
 	@Test
+//	@WithMockUser(value = "testjwtclientid")
 	public void shouldGetAllRechechesById() throws Exception {
 
 		String result = this.toJsonString(recherches);
-		when(rechercheServiceMock.getRecherchesByUserId("1")).thenReturn(recherches);
+		when(rechercheServiceMock.getRecherchesByUser(user)).thenReturn(recherches);
+		when(userRepoMock.findOneByEmail(user.getEmail())).thenReturn(user);
 
-		mockMvc.perform(get("/rest/recherches/1"))
+		mockMvc.perform(get("/rest/recherches/aaa@ppp.ch"))
 				.andDo(print())
 				.andExpect(status().isOk())
 				.andExpect(content().json(result));
 	}
 
 	@Test
+//	@WithMockUser(value = "testjwtclientid")
 	public void shouldUpdateRecherche() throws Exception {
 		AngularRechercheDto rech = angularRecherceBuilder();
-		rech.setId(1l);
+		rech.setId(1L);
 		String result = this.toJsonString(rech);
 
 		when(rechercheServiceMock.updateRecherche(any(AngularRechercheDto.class))).thenReturn(rech);
@@ -99,18 +123,18 @@ public class RechercheRestControllerTest {
 				.andExpect(content().json(result));
 	}
 
-
-
 	@Test
+//	@WithMockUser(value = "testjwtclientid")
 	public void shouldAddRecherche() throws Exception {
 		AngularRechercheDto rech = angularRecherceBuilder();
-		rech.setId(1l);
-		String result = this.toJsonString(rech);
+		AngularRechercheDto rechRes = angularRecherceBuilder();
+		rechRes.setId(1L);
+		String result = this.toJsonString(rechRes);
 
-		when(rechercheServiceMock.addRecherche(rech)).thenReturn(rech);
+		when(rechercheServiceMock.addRecherche(rech)).thenReturn(rechRes);
 
 		mockMvc.perform(post("/rest/recherche")
-				.content(result)
+				.content(this.toJsonString(rech))
 				.contentType(APPLICATION_JSON))
 				.andDo(print())
 				.andExpect(status().isCreated())
@@ -120,12 +144,17 @@ public class RechercheRestControllerTest {
 	}
 
 	@Test
+//	@WithMockUser(value = "testjwtclientid")
 	public void shouldDeleteRecherche() throws Exception {
 		AngularRechercheDto rech = angularRecherceBuilder();
-		rech.setId(1l);
+		rech.setId(1L);
+		Recherche recherche = rechercheBuilder();
+		recherche.setId(1L);
 		String result = this.toJsonString(rech);
 
+		when(rechercheServiceMock.getRechercheByIdAndUser(any())).thenReturn(rechercheBuilder());
 		when(rechercheServiceMock.delRecherche(rech.getId().toString())).thenReturn(rech);
+
 		this.mockMvc.perform(delete("/rest/recherche/1"))
 				.andDo(print())
 				.andExpect(status().isAccepted())
@@ -139,7 +168,7 @@ public class RechercheRestControllerTest {
 	}
 
 	private Recherche rechercheBuilder(){
-		return new Recherche("Web Dev","EN COURS");
+		return new Recherche("Web Dev","EN COURS", user);
 	}
 
 	private AngularRechercheDto angularRecherceBuilder(){
