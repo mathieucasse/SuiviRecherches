@@ -60,7 +60,7 @@ public class RechercheRestControllerTest {
 
 	static private List<Recherche> recherchesForDTO;
 	static private List<AngularRechercheDto> recherches;
-	static private User user = new User("1","aaa@ppp.ch", "aaa",null,null);
+	static private User user = User.of("1","aaa@ppp.ch", "aaa",null,null);
 
 	static {
 		recherchesForDTO = new ArrayList<>();

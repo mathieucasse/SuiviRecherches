@@ -8,7 +8,6 @@ import ch.matfly.suivirecherches.service.ServiceStaticLists;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -34,19 +33,21 @@ public class AppInitializer implements CommandLineRunner {
 		log.info("==================");
 		log.info("Test Query");
 
-		Role rstandard = new Role(null,"STANDARD_USER","Standard User - Has no admin rights");
-		Role radmin = new Role(null,"ADMIN_USER","Admin User - Has permission to perform admin tasks");
+		Role rstandard = roleRepo.findOneByRoleName(Role.USER);
+		Role radmin = roleRepo.findOneByRoleName(Role.ADMIN);
 
 		roleRepo.saveAndFlush(radmin);
 		roleRepo.saveAndFlush(rstandard);
 
+
+
 		List<Role> lrstandard = new ArrayList<>();
 		lrstandard.add(rstandard);
-		User lambda = new User("1","lambda@test.ch", "$2a$10$804o5kw5hkf66CUn5o0IT.0dPpojja0zm9gElWb5p72nfPQafLk16",new ArrayList<>(), lrstandard);
+		User lambda = User.of("1","lambda@test.ch", "$2a$10$804o5kw5hkf66CUn5o0IT.0dPpojja0zm9gElWb5p72nfPQafLk16",new ArrayList<>(), lrstandard);
 		List<Role> lradmin = new ArrayList<>();
 		lradmin.add(rstandard);
 		lradmin.add(radmin);
-		User admin = new User("2","admin@test.ch", "$2a$10$Ajs6i6CJddRfCIi3q3iu4.sFnWaxiAxJEhc3df.2V/IzEoF1xRJge",new ArrayList<>(), lradmin);
+		User admin = User.of("2","admin@test.ch", "$2a$10$Ajs6i6CJddRfCIi3q3iu4.sFnWaxiAxJEhc3df.2V/IzEoF1xRJge",new ArrayList<>(), lradmin);
 
 		userRepo.saveAndFlush(lambda);
 		userRepo.saveAndFlush(admin);
@@ -62,14 +63,6 @@ INSERT INTO user_role(user_id, role_id) VALUES(1,1);
 INSERT INTO user_role(user_id, role_id) VALUES(2,1);
 INSERT INTO user_role(user_id, role_id) VALUES(2,2);
 		 */
-		BCryptPasswordEncoder enc = new BCryptPasswordEncoder();
-		log.info("Encode lambda " +enc.encode("lambda"));
-		log.info("Encode admin " +enc.encode("admin"));
-//		auditRepo.getEntrepriseAuditRevForId(1l).stream().map(p -> p.toString());
-//		log.info(auditRepo.getEntrepriseAuditRevForId(1l).toString());
-//		log.info(auditRepo.getPersonneAuditRevForId(1l).toString());
-//		log.info(auditRepo.getRechercheAuditRevForId(1l).toString());
-		
 
 	}
 

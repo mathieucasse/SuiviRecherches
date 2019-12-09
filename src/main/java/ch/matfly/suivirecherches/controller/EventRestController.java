@@ -14,12 +14,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
 import java.util.List;
 
-@CrossOrigin(origins = {
-        "http://ec2-3-19-239-63.us-east-2.compute.amazonaws.com",
-        "http://ec2-3-19-239-63.us-east-2.compute.amazonaws.com:4200",
-        "http://localhost",
-        "http://localhost:4200",
-        "http://localhost:4202"}, maxAge = 3600)
 @RestController
 @Slf4j
 @RequestMapping("rest")
@@ -29,7 +23,6 @@ public class EventRestController {
     @Autowired private EvenementService evenementService;
 
     @GetMapping(value="event/byRechercheId/{id}")
-//    @ResponseBody
     @ApiOperation(value = "Get All Events of a recherche",	notes = "Return a list of AngularRechercheDTO", response = List.class)
     public List<Evenement> getEventsByRecherche(@PathVariable String id) {
         Long rechercheId = Long.decode(id);

@@ -9,12 +9,14 @@ import javax.persistence.*;
 @Entity
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
+@AllArgsConstructor(staticName="of")
 @EqualsAndHashCode(of= {"id","roleName"})
 @ToString(of= {"id","roleName"})
 @Table(name="Role")
 public class Role {
     private static final long serialVersionUID = 1L;
+    public static final String ADMIN = "ADMIN_USER";
+    public static final String USER = "STANDARD_USER";
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

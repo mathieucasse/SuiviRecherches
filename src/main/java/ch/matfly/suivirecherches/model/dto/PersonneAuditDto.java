@@ -1,12 +1,6 @@
 package ch.matfly.suivirecherches.model.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 @Data
 @NoArgsConstructor
@@ -24,4 +18,6 @@ public class PersonneAuditDto {
 	@Getter @Setter  private Integer rev;
 	@Getter @Setter  private Integer revtype;
 	@Getter @Setter  private String revtstmp;
+
+
 }

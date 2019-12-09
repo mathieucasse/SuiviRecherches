@@ -4,19 +4,12 @@ import ch.matfly.suivirecherches.service.ServiceStaticLists;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-@CrossOrigin(origins = {
-		"http://ec2-3-19-239-63.us-east-2.compute.amazonaws.com",
-		"http://ec2-3-19-239-63.us-east-2.compute.amazonaws.com:4200",
-		"http://localhost",
-		"http://localhost:4200",
-		"http://localhost:4202"}, maxAge = 3600)
 @RestController
 @RequestMapping("rest")
 @PreAuthorize("hasAuthority('ADMIN_USER') or hasAuthority('STANDARD_USER')")
@@ -47,5 +40,10 @@ public class UtilRestController {
 	public List<String> getTauxActivite() {
 		return serviceStaticLists.getTauxActivite();
 	}
-	
+
+	@GetMapping(value="roles")
+	@ApiOperation(value = "Get All Possible Values for role", response = List.class)
+	public List<String> getRoles() {
+		return serviceStaticLists.getRolesNames();
+	}
 }

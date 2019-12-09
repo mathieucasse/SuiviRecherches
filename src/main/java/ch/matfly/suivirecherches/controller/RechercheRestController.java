@@ -14,21 +14,12 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
-import java.text.ParseException;
 import java.util.List;
 
 /**
  * @author mathieucasse
  *
  */
-//@CrossOrigin(
-//		origins = {
-//		"http://ec2-3-19-239-63.us-east-2.compute.amazonaws.com",
-//		"http://ec2-3-19-239-63.us-east-2.compute.amazonaws.com:4200",
-//		"http://localhost",
-//		"http://localhost:4200",
-//		"http://localhost:4202"},
-//		maxAge = 3600)
 @RestController
 @Slf4j
 @RequestMapping("rest")
@@ -50,7 +41,7 @@ public class RechercheRestController {
 	@ApiOperation(value = "Get All Recherches By User email",	notes = "Return for a User the list of AngularRechercheDTO ", response = List.class)
 	public List<AngularRechercheDto> getRecherchesByUserEmail(@PathVariable String email) {
 		User user = userService.getUserByEmail(email);
-		log.debug("=== getRecherchesByUserId ( " + user + " , " + email +" )" );
+		log.debug("=== getRecherchesByUser ( " + user + " , " + email +" )" );
 		return rechercheService.getRecherchesByUser(user);
 	}
 
@@ -79,8 +70,7 @@ public class RechercheRestController {
 	@ApiOperation(value = "add a recherche",
 			notes = "add a recherche from an AngularRechercheDTO",
 			response = AngularRechercheDto.class)
-	public ResponseEntity<AngularRechercheDto> addRecherche(@RequestBody AngularRechercheDto aRecherche)
-			throws ParseException {
+	public ResponseEntity<AngularRechercheDto> addRecherche(@RequestBody AngularRechercheDto aRecherche) {
 		log.debug("========== addRecherche  : " + aRecherche);
 		AngularRechercheDto recherche = rechercheService.addRecherche(aRecherche);
 		if(null != recherche.getId()) {

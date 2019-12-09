@@ -11,7 +11,7 @@ import java.util.List;
 @Entity
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
+@AllArgsConstructor(staticName="of")
 @EqualsAndHashCode(of= {"id","email","password"})
 @ToString(of= {"id","email","password"})
 @Table(name = "User")

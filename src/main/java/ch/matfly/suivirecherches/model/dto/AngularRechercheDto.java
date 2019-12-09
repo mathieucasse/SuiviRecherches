@@ -5,11 +5,13 @@ import ch.matfly.suivirecherches.model.Evenement;
 import ch.matfly.suivirecherches.model.Personne;
 import ch.matfly.suivirecherches.model.Recherche;
 import ch.matfly.suivirecherches.util.MatFormat;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.util.Date;
 
 @Data
+@AllArgsConstructor
 public class AngularRechercheDto {
 	
 	private Long id;
@@ -31,6 +33,7 @@ public class AngularRechercheDto {
 	private String contactPrenomF;
 	private String contactEmailF;
 	private String contactTelephoneF;
+	private String userEmail;
 
 	public AngularRechercheDto(){
 		super();
@@ -100,28 +103,28 @@ public class AngularRechercheDto {
 		return recherche;
 	}
 
-	public AngularRechercheDto(Long id, String dateContact, String poste, String statut, String assignationORP,
-			Integer tauxActivite, String approcheMedia, String entrepriseS, String contactNomS,
-			String contactPrenomS, String contactEmailS, String contactTelephoneS, String entrepriseF, String contactNomF,
-			String contactPrenomF, String contactEmailF, String contactTelephoneF) {
-		super();
-		this.id = id;
-		this.dateContact = dateContact;
-		this.poste = poste;
-		this.statut = statut;
-		this.assignationORP = assignationORP;
-		this.tauxActivite = tauxActivite;
-		this.approcheMedia = approcheMedia;
-		this.entrepriseS = entrepriseS;
-		this.contactNomS = contactNomS;
-		this.contactPrenomS = contactPrenomS;
-		this.contactEmailS = contactEmailS;
-		this.contactTelephoneS = contactTelephoneS;
-		this.entrepriseF = entrepriseF;
-		this.contactNomF = contactNomF;
-		this.contactPrenomF = contactPrenomF;
-		this.contactEmailF = contactEmailF;
-		this.contactTelephoneF = contactTelephoneF;
-	}
+//	public AngularRechercheDto(Long id, String dateContact, String poste, String statut, String assignationORP,
+//			Integer tauxActivite, String approcheMedia, String entrepriseS, String contactNomS,
+//			String contactPrenomS, String contactEmailS, String contactTelephoneS, String entrepriseF, String contactNomF,
+//			String contactPrenomF, String contactEmailF, String contactTelephoneF) {
+//		super();
+//		this.id = id;
+//		this.dateContact = dateContact;
+//		this.poste = poste;
+//		this.statut = statut;
+//		this.assignationORP = assignationORP;
+//		this.tauxActivite = tauxActivite;
+//		this.approcheMedia = approcheMedia;
+//		this.entrepriseS = entrepriseS;
+//		this.contactNomS = contactNomS;
+//		this.contactPrenomS = contactPrenomS;
+//		this.contactEmailS = contactEmailS;
+//		this.contactTelephoneS = contactTelephoneS;
+//		this.entrepriseF = entrepriseF;
+//		this.contactNomF = contactNomF;
+//		this.contactPrenomF = contactPrenomF;
+//		this.contactEmailF = contactEmailF;
+//		this.contactTelephoneF = contactTelephoneF;
+//	}
 	
 }

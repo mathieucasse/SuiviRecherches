@@ -1,21 +1,15 @@
 package ch.matfly.suivirecherches.service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-
+import ch.matfly.suivirecherches.dao.*;
+import ch.matfly.suivirecherches.model.*;
+import ch.matfly.suivirecherches.util.StaticLists;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import ch.matfly.suivirecherches.dao.ApprocheMediaRepo;
-import ch.matfly.suivirecherches.dao.AssignationOrpRepo;
-import ch.matfly.suivirecherches.dao.RechercheStatutRepo;
-import ch.matfly.suivirecherches.dao.TauxActiviteRepo;
-import ch.matfly.suivirecherches.model.ApprocheMedia;
-import ch.matfly.suivirecherches.model.AssignationOrp;
-import ch.matfly.suivirecherches.model.RechercheStatut;
-import ch.matfly.suivirecherches.model.TauxActivite;
-import lombok.extern.slf4j.Slf4j;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -25,12 +19,13 @@ public class ServiceStaticLists {
 	@Autowired AssignationOrpRepo assignationOrpRepo;
 	@Autowired RechercheStatutRepo rechercheStatutRepo;
 	@Autowired TauxActiviteRepo tauxActiviteRepo;
-
+	@Autowired RoleRepo roleRepo;
 
 	private List<String> approcheMedia = new ArrayList<>();
 	private List<String> assignationOrp = new ArrayList<>();
 	private List<String> rechercheStatut = new ArrayList<>();
 	private List<String> tauxActivite = new ArrayList<>();
+	private List<Role> roles = new ArrayList<>();
 
 	public List<String> getApprocheMedia() {
 		if(this.approcheMedia.isEmpty()) {
@@ -58,6 +53,18 @@ public class ServiceStaticLists {
 			this.tauxActivite = tauxActiviteRepo.findAll().stream().map(TauxActivite::getValue).collect(Collectors.toList());
 		}
 		return this.tauxActivite;
+	}
+
+	public List<String> getRolesNames() {
+		return this.getRoles().stream().map(Role::getRoleName).collect(Collectors.toList());
+	}
+
+	public List<Role> getRoles() {
+		if(this.roles.isEmpty()) {
+			this.roles = roleRepo.findAll();
+			StaticLists.setRoles(this.roles);
+		}
+		return this.roles;
 	}
 
 	public void initLists() {
@@ -98,6 +105,12 @@ public class ServiceStaticLists {
 			tauxActiviteRepo.save(TauxActivite.of(80,"80"));
 			tauxActiviteRepo.save(TauxActivite.of(90,"90"));
 			tauxActiviteRepo.save(TauxActivite.of(100,"100"));
+		}
+
+		if(roleRepo.count() < 1) {
+			log.info("Loading Roles List ");
+			roleRepo.save(Role.of(1L,Role.USER,"Standard User - Has no admin rights"));
+			roleRepo.save(Role.of(2L,Role.ADMIN,"Admin User - Has permission to perform admin tasks"));
 		}
 	}
 }

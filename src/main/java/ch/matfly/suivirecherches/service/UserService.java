@@ -38,16 +38,15 @@ public class UserService implements UserDetailsService {
     public User getUserByEmail(String email) {
         this.user = userRepo.findOneByEmail(email);
         if(null == user){
-            this.user = this.createUser(email);
+            throw new UsernameNotFoundException(String.format("The useremail %s doesn't exist", email));
         }
         return this.user;
     }
 
     @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        User user = userRepo.findOneByEmail(email);
-
-        if(user == null) {
+    public UserDetails loadUserByUsername(String email) {
+        this.user = userRepo.findOneByEmail(email);
+        if(null == user){
             throw new UsernameNotFoundException(String.format("The useremail %s doesn't exist", email));
         }
 
