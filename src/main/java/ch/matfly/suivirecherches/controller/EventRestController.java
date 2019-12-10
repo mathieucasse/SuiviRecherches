@@ -28,7 +28,7 @@ public class EventRestController {
         Long rechercheId = Long.decode(id);
         List<Evenement> es = evenementService.getEvenementsByRechercheId(rechercheId);
         es.forEach(val -> val.setRechercheId(rechercheId));
-        log.debug(es.toString());
+//        log.debug(es.toString());
         return es;
 //        return evenementService.getEvenementsByRechercheId(Long.decode(id));
     }
