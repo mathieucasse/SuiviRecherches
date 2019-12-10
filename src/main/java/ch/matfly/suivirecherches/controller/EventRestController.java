@@ -37,18 +37,9 @@ public class EventRestController {
     @ResponseBody
     @ApiOperation(value = "update an event",	notes = "update an event from an Event", response = AngularRechercheDto.class)
     public ResponseEntity<Evenement> updateEvent(@RequestBody Evenement evenement) {
-
         log.debug(">>>>>>>>>  RestController==== updateEvent Called !!! " + evenement);
-        evenement = evenementService.saveEvenement(evenement);
-        if(null!=evenement) {
-            URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
-                    .path("/{id}")
-                    .buildAndExpand(evenement.getId())
-                    .toUri();
-            return ResponseEntity.ok().body(evenement);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        Evenement e = evenementService.saveEvenement(evenement);
+        return (null != e) ? ResponseEntity.ok().body(e) : ResponseEntity.notFound().build();
     }
 
     @PostMapping("event")
